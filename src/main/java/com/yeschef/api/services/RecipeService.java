@@ -18,8 +18,8 @@ public class RecipeService {
 		return recipeDao.getRecipes();
 	}
 
-	public Recipe getRecipeById(Integer id) {
-		return recipeDao.getRecipeById(id);
+	public List<Recipe> getRecipesById(Integer id) {
+		return recipeDao.getRecipesById(id);
 	}
 	
 	public Recipe deleteRecipeById(Integer id) {

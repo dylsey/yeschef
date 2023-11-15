@@ -31,14 +31,14 @@ public class RecipeController {
 	
 	@GET
 	@Path("/{idValue}")
-	public Recipe getRecipeById(@PathParam("idValue") Integer id) {
-		return recipeService.getRecipeById(id);
+	public List<Recipe> getRecipeById(@PathParam("idValue") Integer id) {
+		return recipeService.getRecipesById(id);
 	}
 	
-	@DELETE
+	@DELETE // this will delete both the recipe and the items in the recipe. 
 	@Path("/{idValue}")
 	public Recipe deleteRecipeById(@PathParam("idValue") Integer id) {
-		recipeItemService.deleteRecipeItemsByRecipeId(id);
+//		recipeItemService.deleteRecipeItemsByRecipeId(id);
 		return recipeService.deleteRecipeById(id);
 	}
 	

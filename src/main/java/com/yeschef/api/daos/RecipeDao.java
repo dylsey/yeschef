@@ -7,9 +7,9 @@ import com.yeschef.api.models.Recipe;
 public interface RecipeDao {
 	
 	public List<Recipe> getRecipes();
-	public Recipe getRecipeById(Integer id);
-	public Recipe deleteRecipeById(Integer id);
+	public List<Recipe> getRecipesById(Integer id);
 	public List<Recipe> searchRecipesByName(String searchTerm);
+	public Recipe deleteRecipeById(Integer id);	
 	public Recipe createRecipe(Recipe recipe);
 	
 	

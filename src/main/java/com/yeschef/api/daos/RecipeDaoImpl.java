@@ -13,10 +13,17 @@ import com.yeschef.api.models.Recipe;
 
 public class RecipeDaoImpl implements RecipeDao {
 
-   private Connection connection = MariaDbUtil.getConnection();
-
-	private static String selectAllRecipes = "SELECT id, name, spoonacular_recipe_id, image_url, 		updatepdateDateTime, createDateTime "
+	private Connection connection = MariaDbUtil.getConnection();
+	
+	//SQL statements 
+	private static String selectAllRecipes = "SELECT id, name, spoonacular_recipe_id, image_url, updateDateTime, 				createDateTime "
 			+ "FROM recipes";
+
+	private static String selectRecipesById = "SELECT * " + "FROM recipes WHERE id = ?";
+	
+	private static String deleteRecipeById = 
+			"DELETE FROM recipes " 
+			+ "WHERE id = ?";
 
 	@Override
 	public List<Recipe> getRecipes() {
@@ -24,7 +31,6 @@ public class RecipeDaoImpl implements RecipeDao {
 		ResultSet result = null;
 		Statement statement = null;
 
-		
 		try {
 			statement = connection.createStatement();
 			result = statement.executeQuery(selectAllRecipes);
@@ -37,7 +43,6 @@ public class RecipeDaoImpl implements RecipeDao {
 		return myRecipes;
 	}
 
-	
 	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
 		while (result.next()) {
@@ -48,8 +53,8 @@ public class RecipeDaoImpl implements RecipeDao {
 			recipe.setSpoonacularRecipeId(result.getInt("spoonacular_recipe_id"));
 			recipe.setImageUrl(result.getString("image_url"));
 
-//			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
-//			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
+			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
+			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
 
 			myRecipes.add(recipe);
 		}
@@ -58,50 +63,65 @@ public class RecipeDaoImpl implements RecipeDao {
 	}
 
 	@Override
-	public Recipe getRecipeById(Integer id) {
-		Recipe recipe = null;
-		
-		try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM recipes WHERE id = ?")) {
-			preparedStatement.setInt(1, id);
-			try (ResultSet result = preparedStatement.executeQuery()) {
-				if (result.next()) {
-					recipe = makeRecipe(result);
-				}
-			}
+	public List<Recipe> getRecipesById(Integer id) {
+		List<Recipe> myRecipes = new ArrayList<Recipe>();
+		ResultSet result = null;
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection.prepareStatement(selectRecipesById);
+			statement.setInt(1, id);
+
+			result = statement.executeQuery();
+			myRecipes = makeRecipe(result);
+
 		} catch (SQLException e) {
-			e.printStackTrace(); 
+			e.printStackTrace();
 		}
-		return recipe;
+
+		return myRecipes;
 	}
 
 	@Override
 	public Recipe deleteRecipeById(Integer id) {
-		Recipe recipe = getRecipeById(id); // Retrieve the recipe before deleting
-		try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM recipes WHERE id = ?")) {
-			preparedStatement.setInt(1, id);
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace(); // Handle the exception according to your application's needs
+				
+		List<Recipe> recipes = this.getRecipesById(id); 
+		Recipe recipeToDelete = null;
+		
+		if (recipes.size() > 0) {
+			recipeToDelete = recipes.get(0);
+			int updateRowCount = 0;
+			PreparedStatement ps = null;	
+			try {
+				ps = connection.prepareStatement(deleteRecipeById);
+				ps.setInt(1, id);
+				updateRowCount = ps.executeUpdate();
+				System.out.println("rows deleted: " + updateRowCount);
+			} catch (SQLException e) {
+				e.printStackTrace(); 
+			}
 		}
-		return recipe;
+		
+		return recipeToDelete;
 	}
 
 	@Override
 	public List<Recipe> searchRecipesByName(String searchTerm) {
-		List<Recipe> recipes = new ArrayList<>();
-		try (PreparedStatement preparedStatement = connection
-				.prepareStatement("SELECT * FROM recipes WHERE name LIKE ?")) {
+		List<Recipe> myRecipes = new ArrayList<>();
+		ResultSet result = null;
+		
+		try { PreparedStatement preparedStatement = 
+				connection.prepareStatement("SELECT * FROM recipes WHERE name LIKE ?"); 
 			preparedStatement.setString(1, "%" + searchTerm + "%");
-			try (ResultSet result = preparedStatement.executeQuery()) {
+			
+				result = preparedStatement.executeQuery(); 
 				while (result.next()) {
-					Recipe recipe = makeRecipe(result);
-					recipes.add(recipe);
-				}
+					myRecipes = makeRecipe(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace(); // Handle the exception according to your application's needs
 		}
-		return recipes;
+		return myRecipes;
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package com.yeschef.api.models;
 public class RecipeItem {
 	
 	private Integer id;
-	private Integer spoonacularRecipeId;
+	private Integer recipeId;//foreign key connecting both SQL tables. This needs to be the same as the 		 									recipe ID from the Recipe Class
 	private Integer spoonacularIngredientId;
 	private String imageUrl;
 	private String quantity;
@@ -22,10 +22,10 @@ public class RecipeItem {
 		this.id = id;
 	}
 	public Integer getRecipeId() {
-		return spoonacularRecipeId;
+		return recipeId;
 	}
 	public void setRecipeId(Integer recipeId) {
-		this.spoonacularRecipeId = recipeId;
+		this.recipeId = recipeId;
 	}
 	public Integer getSpoonacularIngredientId() {
 		return spoonacularIngredientId;
