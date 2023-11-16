@@ -38,7 +38,7 @@ public class RecipeController {
 	@DELETE // this will delete both the recipe and the items in the recipe. 
 	@Path("/{idValue}")
 	public Recipe deleteRecipeById(@PathParam("idValue") Integer id) {
-//		recipeItemService.deleteRecipeItemsByRecipeId(id);
+		recipeItemService.deleteRecipeItemsByRecipeId(id);
 		return recipeService.deleteRecipeById(id);
 	}
 	

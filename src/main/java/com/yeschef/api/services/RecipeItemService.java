@@ -18,7 +18,7 @@ public class RecipeItemService {
 	}
 	
 	public List<RecipeItem> deleteRecipeItemsByRecipeId(Integer recipeId){
-		return recipeItemDao.deleteRecipeItemByRecipeId(recipeId);
+		return recipeItemDao.deleteRecipeItemsByRecipeId(recipeId);
 	}
 	
 	public RecipeItem createRecipeItem(RecipeItem recipeItem) {

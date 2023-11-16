@@ -24,6 +24,12 @@ public class RecipeDaoImpl implements RecipeDao {
 	private static String deleteRecipeById = 
 			"DELETE FROM recipes " 
 			+ "WHERE id = ?";
+	
+	private static String selectRecipesByName = 
+			"SELECT * "
+			+ "FROM recipes "
+			+ "WHERE name LIKE ?";
+	
 
 	@Override
 	public List<Recipe> getRecipes() {
@@ -105,21 +111,24 @@ public class RecipeDaoImpl implements RecipeDao {
 		return recipeToDelete;
 	}
 
+	/*
+	 * Need to figure out how to pass this method the searchTerm taken from the JS entered into a search bar or a drop down menu
+	 */
 	@Override
 	public List<Recipe> searchRecipesByName(String searchTerm) {
 		List<Recipe> myRecipes = new ArrayList<>();
 		ResultSet result = null;
+		PreparedStatement statement = null;
 		
-		try { PreparedStatement preparedStatement = 
-				connection.prepareStatement("SELECT * FROM recipes WHERE name LIKE ?"); 
-			preparedStatement.setString(1, "%" + searchTerm + "%");
+		try { 
+			statement = connection.prepareStatement(selectRecipesByName); 
+			statement.setString(1, "%" + searchTerm + "%");
 			
-				result = preparedStatement.executeQuery(); 
-				while (result.next()) {
-					myRecipes = makeRecipe(result);
-			}
+			result = statement.executeQuery(); 
+			myRecipes = makeRecipe(result);
+					
 		} catch (SQLException e) {
-			e.printStackTrace(); // Handle the exception according to your application's needs
+			e.printStackTrace();
 		}
 		return myRecipes;
 	}
@@ -141,7 +150,7 @@ public class RecipeDaoImpl implements RecipeDao {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace(); // Handle the exception according to your application's needs
+			e.printStackTrace(); 
 		}
 		return recipe;
 	}

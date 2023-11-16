@@ -8,7 +8,7 @@ public interface RecipeItemDao {
 	
 	public List<RecipeItem> getRecipeItems();
 	public List<RecipeItem> getRecipeItemsByRecipeId(Integer recipeId);
-	public List<RecipeItem> deleteRecipeItemByRecipeId(Integer recipeId);
+	public List<RecipeItem> deleteRecipeItemsByRecipeId(Integer recipeId);
 	public RecipeItem createRecipeItem(RecipeItem recipeItem);
 	
 	
