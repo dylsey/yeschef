@@ -1,14 +1,31 @@
 package com.yeschef.api.models;
 
+import java.time.LocalDateTime;
+
 public class RecipeItem {
 	
 	private Integer id;
+	private String recipeItemName;
 	private Integer recipeId;//foreign key connecting both SQL tables. This needs to be the same as the recipe ID from the Recipe Class
-	private Integer spoonacularIngredientId; // also links both data tables
+	private Integer spoonacularRecipeId; // also links both data tables... Is 
 	private String imageUrl;
 	private String quantity;
-	private String recipeItemName;
 	
+	private LocalDateTime updateDateTime;
+	private LocalDateTime createDateTime;
+	
+	public LocalDateTime getUpdateDateTime() {
+		return updateDateTime;
+	}
+	public void setUpdateDateTime(LocalDateTime updateDateTime) {
+		this.updateDateTime = updateDateTime;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
 	public String getRecipeItemName() {
 		return recipeItemName;
 	}
@@ -27,11 +44,11 @@ public class RecipeItem {
 	public void setRecipeId(Integer recipeId) {
 		this.recipeId = recipeId;
 	}
-	public Integer getSpoonacularIngredientId() {
-		return spoonacularIngredientId;
+	public Integer getSpoonacularRecipeId() {
+		return spoonacularRecipeId;
 	}
-	public void setSpoonacularIngredientId(Integer spoonacularIngredientId) {
-		this.spoonacularIngredientId = spoonacularIngredientId;
+	public void setSpoonacularRecipeId(Integer spoonacularIngredientId) {
+		this.spoonacularRecipeId = spoonacularIngredientId;
 	}
 	public String getImageUrl() {
 		return imageUrl;

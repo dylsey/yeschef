@@ -17,24 +17,6 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 
 
     @Override
-    public List<RecipeItem> getRecipeItems() {
-        List<RecipeItem> recipeItems = new ArrayList<>();
-        String sql = "SELECT * FROM recipe_items";
-
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                RecipeItem recipeItem = mapResultSetToRecipeItem(resultSet);
-                recipeItems.add(recipeItem);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception according to your application's needs
-        }
-        return recipeItems;
-    }
-
-    @Override
     public List<RecipeItem> getRecipeItemsByRecipeId(Integer recipeId) {
         List<RecipeItem> recipeItems = new ArrayList<>();
         String sql = "SELECT * FROM recipe_items WHERE recipe_id = ?";
@@ -53,6 +35,43 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
         }
         return recipeItems;
     }
+    
+    
+    
+    
+    private List<RecipeItem> makeRecipeItem(ResultSet result) throws SQLException {
+    	List<RecipeItem> myRecipeItems = new ArrayList<RecipeItem>();
+    	while (result.next()) {
+    		
+    		RecipeItem recipeItem = new RecipeItem();
+    		recipeItem.setId(result.getInt("id"));
+    		recipeItem.setRecipeItemName(result.getString("recipeItemName"));
+    		recipeItem.setRecipeId(result.getInt("recipeId"));
+   		
+    		
+    		
+    		
+    		
+    	}
+    	return myRecipeItems;
+    }
+    
+
+    
+    
+    // Helper method to map ResultSet to RecipeItem object
+    private RecipeItem mapResultSetToRecipeItem(ResultSet resultSet) throws SQLException {
+        RecipeItem recipeItem = new RecipeItem();
+        recipeItem.setId(resultSet.getInt("id"));
+        recipeItem.setRecipeId(resultSet.getInt("recipe_id"));
+        recipeItem.setRecipeItemName(resultSet.getString("name"));
+        recipeItem.setSpoonacularRecipeId(resultSet.getInt("spoonacular_ingredient_id"));
+        recipeItem.setImageUrl(resultSet.getString("image_url"));
+        recipeItem.setQuantity(resultSet.getString("quantity"));
+        return recipeItem;
+    }
+
+
 
     @Override
     public List<RecipeItem> deleteRecipeItemsByRecipeId(Integer recipeId) {
@@ -76,7 +95,7 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, recipeItem.getRecipeId());
             preparedStatement.setString(2, recipeItem.getRecipeItemName());
-            preparedStatement.setInt(3, recipeItem.getSpoonacularIngredientId());
+            preparedStatement.setInt(3, recipeItem.getSpoonacularRecipeId());
             preparedStatement.setString(4, recipeItem.getImageUrl());
             preparedStatement.setString(5, recipeItem.getQuantity());
 
@@ -94,18 +113,24 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
         return recipeItem;
     }
 
-    // Helper method to map ResultSet to RecipeItem object
-    private RecipeItem mapResultSetToRecipeItem(ResultSet resultSet) throws SQLException {
-        RecipeItem recipeItem = new RecipeItem();
-        recipeItem.setId(resultSet.getInt("id"));
-        recipeItem.setRecipeId(resultSet.getInt("recipe_id"));
-        recipeItem.setRecipeItemName(resultSet.getString("name"));
-        recipeItem.setSpoonacularIngredientId(resultSet.getInt("spoonacular_ingredient_id"));
-        recipeItem.setImageUrl(resultSet.getString("image_url"));
-        recipeItem.setQuantity(resultSet.getString("quantity"));
-        return recipeItem;
-    }
+   
+    @Override
+    public List<RecipeItem> getRecipeItems() {
+        List<RecipeItem> recipeItems = new ArrayList<>();
+        String sql = "SELECT * FROM recipe_items";
 
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                RecipeItem recipeItem = mapResultSetToRecipeItem(resultSet);
+                recipeItems.add(recipeItem);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+        return recipeItems;
+    }
 
 
 }

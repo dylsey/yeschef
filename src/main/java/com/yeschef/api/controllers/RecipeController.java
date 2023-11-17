@@ -23,12 +23,12 @@ public class RecipeController {
 	private RecipeService recipeService = new RecipeService();
 	private RecipeItemService recipeItemService = new RecipeItemService();
 	
-	
+	//gets all recipes in the home database
 	@GET
 	public List<Recipe> getRecipes(){		
 		return recipeService.getRecipes();
 	}
-	
+	//pulls recipe in home database based on SQL's given id number
 	@GET
 	@Path("/{idValue}")
 	public List<Recipe> getRecipeById(@PathParam("idValue") Integer id) {
