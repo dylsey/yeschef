@@ -15,10 +15,14 @@ public class RecipeDaoImpl implements RecipeDao {
 	private Connection connection = MariaDbUtil.getConnection();
 	
 	//SQL statements 
-	private static String selectAllRecipes = "SELECT id, name, spoonacular_recipe_id, image_url, updateDateTime, 				createDateTime "
+	private static String selectAllRecipes = 
+			"SELECT * "
 			+ "FROM recipes";
 
-	private static String selectRecipesById = "SELECT * " + "FROM recipes WHERE id = ?";
+	private static String selectRecipesById = 
+			"SELECT * " + 
+			"FROM recipes "
+			+ "WHERE id = ?";
 	
 	private static String deleteRecipeById = 
 			"DELETE FROM recipes " 
@@ -55,9 +59,8 @@ public class RecipeDaoImpl implements RecipeDao {
 			Recipe recipe = new Recipe();
 			recipe.setId(result.getInt("id"));
 			recipe.setName(result.getString("name"));
-			recipe.setSpoonacularRecipeId(result.getInt("spoonacular_recipe_id"));
-			recipe.setImageUrl(result.getString("image_url"));
-
+			recipe.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
+			recipe.setImageUrl(result.getString("imageUrl"));
 			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
 			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
 
@@ -135,7 +138,7 @@ public class RecipeDaoImpl implements RecipeDao {
 	@Override
 	public Recipe createRecipe(Recipe recipe) {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"INSERT INTO recipes (name, spoonacular_recipe_id, image_url) VALUES (?, ?, ?)",
+				"INSERT INTO recipes (name, spoonacularRecipeId, imageUrl) VALUES (?, ?, ?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			preparedStatement.setString(1, recipe.getName());
 			preparedStatement.setInt(2, recipe.getSpoonacularRecipeId());

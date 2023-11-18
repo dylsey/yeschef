@@ -7,10 +7,9 @@ public class RecipeItem {
 	private Integer id;
 	private String recipeItemName;
 	private Integer recipeId;//foreign key connecting both SQL tables. This needs to be the same as the recipe ID from the Recipe Class
-	private Integer spoonacularRecipeId; // also links both data tables... Is 
+	private Integer spoonacularRecipeId; // also links both data tables... not Foreign key but should be the same in each table
 	private String imageUrl;
-	private String quantity;
-	
+	private String quantity;	
 	private LocalDateTime updateDateTime;
 	private LocalDateTime createDateTime;
 	

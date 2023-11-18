@@ -1,6 +1,5 @@
 package com.yeschef.api.daos;
 
-
 import com.yeschef.api.models.RecipeItem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,124 +12,111 @@ import java.util.List;
 
 public class RecipeItemDaoImpl implements RecipeItemDao {
 
-    private Connection connection = MariaDbUtil.getConnection();
+	private Connection connection = MariaDbUtil.getConnection();
+
+	// SQL statements
+	private static String selectRecipeItemsbyRecipeId = "SELECT * " + "FROM recipeItems " + "WHERE recipeId = ?";
+	
+	
+	
+
+	@Override
+	public List<RecipeItem> getRecipeItemsByRecipeId(Integer recipeId) {
+		List<RecipeItem> myRecipeItems = new ArrayList<>();
+		ResultSet result = null;
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection.prepareStatement(selectRecipeItemsbyRecipeId);
+			statement.setInt(1, recipeId);
+
+			result = statement.executeQuery();
+			myRecipeItems = makeRecipeItem(result);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return myRecipeItems;
+	}
+
+	// convenience method to make an List of any Recipe items that are needed for each method
+	private List<RecipeItem> makeRecipeItem(ResultSet result) throws SQLException {
+		List<RecipeItem> myRecipeItems = new ArrayList<RecipeItem>();
+		while (result.next()) {
+
+			RecipeItem recipeItem = new RecipeItem();
+			recipeItem.setId(result.getInt("id"));
+			recipeItem.setRecipeItemName(result.getString("recipeItemName"));
+			recipeItem.setRecipeId(result.getInt("recipeId"));
+			recipeItem.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
+			recipeItem.setImageUrl(result.getString("imageUrl"));
+			recipeItem.setQuantity(result.getString("quantity"));
+			recipeItem.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
+			recipeItem.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
+
+			myRecipeItems.add(recipeItem);
+		}
+
+		return myRecipeItems;
+	}
 
 
-    @Override
-    public List<RecipeItem> getRecipeItemsByRecipeId(Integer recipeId) {
-        List<RecipeItem> recipeItems = new ArrayList<>();
-        String sql = "SELECT * FROM recipe_items WHERE recipe_id = ?";
+	@Override
+	public List<RecipeItem> deleteRecipeItemsByRecipeId(Integer recipeId) {
+		String sql = "DELETE FROM recipe_items WHERE recipe_id = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, recipeId);
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+			preparedStatement.setInt(1, recipeId);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace(); // Handle the exception according to your application's needs
+		}
+		return null;
+	}
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    RecipeItem recipeItem = mapResultSetToRecipeItem(resultSet);
-                    recipeItems.add(recipeItem);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception according to your application's needs
-        }
-        return recipeItems;
-    }
-    
-    
-    
-    
-    private List<RecipeItem> makeRecipeItem(ResultSet result) throws SQLException {
-    	List<RecipeItem> myRecipeItems = new ArrayList<RecipeItem>();
-    	while (result.next()) {
-    		
-    		RecipeItem recipeItem = new RecipeItem();
-    		recipeItem.setId(result.getInt("id"));
-    		recipeItem.setRecipeItemName(result.getString("recipeItemName"));
-    		recipeItem.setRecipeId(result.getInt("recipeId"));
-   		
-    		
-    		
-    		
-    		
-    	}
-    	return myRecipeItems;
-    }
-    
+	@Override
+	public RecipeItem createRecipeItem(RecipeItem recipeItem) {
+		String sql = "INSERT INTO recipe_items (recipe_id, name, spoonacular_ingredient_id, image_url, quantity) "
+				+ "VALUES (?, ?, ?, ?, ?)";
 
-    
-    
-    // Helper method to map ResultSet to RecipeItem object
-    private RecipeItem mapResultSetToRecipeItem(ResultSet resultSet) throws SQLException {
-        RecipeItem recipeItem = new RecipeItem();
-        recipeItem.setId(resultSet.getInt("id"));
-        recipeItem.setRecipeId(resultSet.getInt("recipe_id"));
-        recipeItem.setRecipeItemName(resultSet.getString("name"));
-        recipeItem.setSpoonacularRecipeId(resultSet.getInt("spoonacular_ingredient_id"));
-        recipeItem.setImageUrl(resultSet.getString("image_url"));
-        recipeItem.setQuantity(resultSet.getString("quantity"));
-        return recipeItem;
-    }
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			preparedStatement.setInt(1, recipeItem.getRecipeId());
+			preparedStatement.setString(2, recipeItem.getRecipeItemName());
+			preparedStatement.setInt(3, recipeItem.getSpoonacularRecipeId());
+			preparedStatement.setString(4, recipeItem.getImageUrl());
+			preparedStatement.setString(5, recipeItem.getQuantity());
 
+			preparedStatement.executeUpdate();
 
+			// Retrieve the auto-generated ID
+			try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					recipeItem.setId(generatedKeys.getInt(1));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // Handle the exception according to your application's needs
+		}
+		return recipeItem;
+	}
 
-    @Override
-    public List<RecipeItem> deleteRecipeItemsByRecipeId(Integer recipeId) {
-        String sql = "DELETE FROM recipe_items WHERE recipe_id = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, recipeId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception according to your application's needs
-        }
-        return null;
-    }
-
-    @Override
-    public RecipeItem createRecipeItem(RecipeItem recipeItem) {
-        String sql = "INSERT INTO recipe_items (recipe_id, name, spoonacular_ingredient_id, image_url, quantity) " +
-                     "VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, recipeItem.getRecipeId());
-            preparedStatement.setString(2, recipeItem.getRecipeItemName());
-            preparedStatement.setInt(3, recipeItem.getSpoonacularRecipeId());
-            preparedStatement.setString(4, recipeItem.getImageUrl());
-            preparedStatement.setString(5, recipeItem.getQuantity());
-
-            preparedStatement.executeUpdate();
-
-            // Retrieve the auto-generated ID
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    recipeItem.setId(generatedKeys.getInt(1));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception according to your application's needs
-        }
-        return recipeItem;
-    }
-
-   
-    @Override
-    public List<RecipeItem> getRecipeItems() {
-        List<RecipeItem> recipeItems = new ArrayList<>();
-        String sql = "SELECT * FROM recipe_items";
-
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                RecipeItem recipeItem = mapResultSetToRecipeItem(resultSet);
-                recipeItems.add(recipeItem);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); 
-        }
-        return recipeItems;
-    }
-
+//		not sure if this method is necessary   
+//    @Override
+//    public List<RecipeItem> getRecipeItems() {
+//        List<RecipeItem> recipeItems = new ArrayList<>();
+//        String sql = "SELECT * FROM recipe_items";
+//
+//        try (Statement statement = connection.createStatement();
+//             ResultSet resultSet = statement.executeQuery(sql)) {
+//
+//            while (resultSet.next()) {
+//                RecipeItem recipeItem = mapResultSetToRecipeItem(resultSet);
+//                recipeItems.add(recipeItem);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace(); 
+//        }
+//        return recipeItems;
+//    }
 
 }

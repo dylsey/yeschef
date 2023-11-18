@@ -9,9 +9,9 @@ public class RecipeItemService {
 
 	private RecipeItemDao recipeItemDao;
 	
-	public List<RecipeItem> getRecipeItems(){
-		return recipeItemDao.getRecipeItems();
-	}
+//	public List<RecipeItem> getRecipeItems(){
+//		return recipeItemDao.getRecipeItems();
+//	}
 	
 	public List<RecipeItem> getRecipeItemsByRecipeId(Integer recipeId){
 		return recipeItemDao.getRecipeItemsByRecipeId(recipeId);

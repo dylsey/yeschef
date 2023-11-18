@@ -49,20 +49,22 @@ public class RecipeController {
 		return recipeService.searchRecipesByName(searchTerm);
 	}
 	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Recipe createRecipe(Recipe recipe) {
-		return recipeService.createRecipe(recipe);
-	}
 	
 	@GET
-	@Path("/{idValue}/items")
-	public List<RecipeItem> getRecipeItemsByRecipeId(@PathParam("idValue") Integer id) {
-		return recipeItemService.getRecipeItemsByRecipeId(id);
+	@Path("/items/{idValue}") //@Path("/{idValue}/items") this was the original path and I cannot remember why. it does'nt make sense to me this way. 
+	public List<RecipeItem> getRecipeItemsByRecipeId(@PathParam("idValue") Integer recipeId) {
+		return recipeItemService.getRecipeItemsByRecipeId(recipeId);
 	}
 	
+	//so far this method is not used or finished
+		@POST
+		@Consumes(MediaType.APPLICATION_JSON)
+		public Recipe createRecipe(Recipe recipe) {
+			return recipeService.createRecipe(recipe);
+		}
+	
 	@POST
-	@Path("/{idValue}/items")
+	@Path("/items/{idValue}")
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public RecipeItem createRecipeItem(RecipeItem recipeItem, @PathParam("idValue") Integer recipeId) {
 		recipeItem.setRecipeId(recipeId);
