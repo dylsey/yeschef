@@ -42,11 +42,19 @@ public class RecipeController {
 		return recipeService.deleteRecipeById(id);
 	}
 	
-	
+	//will I need to feed this method input from a search box on the home page? 
 	@GET
 	@Path("/search/{searchTerm}")
 	public List<Recipe> searchRecipesByName(@PathParam("searchTerm") String searchTerm){
 		return recipeService.searchRecipesByName(searchTerm);
+	}
+	
+	//returns all items in the recipe items table. will i need to make these available to choose to add to the grocery cart? how? 
+	//is this method necessary? 
+	@GET
+	@Path("/items")
+	public List<RecipeItem> getRecipeItems(){
+		return recipeItemService.getRecipeItems();
 	}
 	
 	

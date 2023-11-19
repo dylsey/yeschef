@@ -2,6 +2,7 @@ package com.yeschef.api.services;
 
 import java.util.List;
 
+import com.yeschef.api.models.RequestError;
 import com.yeschef.api.daos.RecipeDao;
 import com.yeschef.api.daos.RecipeDaoImpl;
 import com.yeschef.api.models.Recipe;
@@ -35,6 +36,12 @@ public class RecipeService {
 	}
 	
 	
+	private void makeError(RequestError error) {
+		Response response = Response.status(400)
+				.entity(error)
+				.build();
+		throw new WebApplicationException(response);
 	
+	}
 
 }

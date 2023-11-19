@@ -33,7 +33,25 @@ public class RecipeDaoImpl implements RecipeDao {
 			+ "FROM recipes "
 			+ "WHERE name LIKE ?";
 	
+	//convenience method to make a list of recipes for each method
+	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
+		List<Recipe> myRecipes = new ArrayList<Recipe>();
+		while (result.next()) {
 
+			Recipe recipe = new Recipe();
+			recipe.setId(result.getInt("id"));
+			recipe.setName(result.getString("name"));
+			recipe.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
+			recipe.setImageUrl(result.getString("imageUrl"));
+			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
+			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
+
+			myRecipes.add(recipe);
+		}
+
+		return myRecipes;
+	}
+	
 	@Override
 	public List<Recipe> getRecipes() {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
@@ -52,23 +70,7 @@ public class RecipeDaoImpl implements RecipeDao {
 		return myRecipes;
 	}
 
-	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
-		List<Recipe> myRecipes = new ArrayList<Recipe>();
-		while (result.next()) {
 
-			Recipe recipe = new Recipe();
-			recipe.setId(result.getInt("id"));
-			recipe.setName(result.getString("name"));
-			recipe.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
-			recipe.setImageUrl(result.getString("imageUrl"));
-			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
-			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
-
-			myRecipes.add(recipe);
-		}
-
-		return myRecipes;
-	}
 
 	@Override
 	public List<Recipe> getRecipesById(Integer id) {

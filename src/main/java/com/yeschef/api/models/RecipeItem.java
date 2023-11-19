@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class RecipeItem {
 	
 	private Integer id;
-	private String recipeItemName;
+	private String recipeItem;
 	private Integer recipeId;//foreign key connecting both SQL tables. This needs to be the same as the recipe ID from the Recipe Class
 	private Integer spoonacularRecipeId; // also links both data tables... not Foreign key but should be the same in each table
 	private String imageUrl;
@@ -25,11 +25,11 @@ public class RecipeItem {
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
 	}
-	public String getRecipeItemName() {
-		return recipeItemName;
+	public String getRecipeItem() {
+		return recipeItem;
 	}
-	public void setRecipeItemName(String recipeItemName) {
-		this.recipeItemName = recipeItemName;
+	public void setRecipeItem(String recipeItem) {
+		this.recipeItem = recipeItem;
 	}
 	public Integer getId() {
 		return id;
