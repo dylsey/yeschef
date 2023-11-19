@@ -53,7 +53,7 @@ public class RecipeService {
 	}
 	
 	private void validateRecipeId(Integer id) {
-		if (id <= 0) {
+		if (id < 0) {
 			RequestError error = new RequestError(1, 
 					"Invalid recipe id " + id + ". Value must be > 0.");
 			makeError(error);
@@ -62,7 +62,7 @@ public class RecipeService {
 	}
 	
 	private void validateRecipeName(String searchTerm) {
-		if (searchTerm.isEmpty()) {
+		if (searchTerm == null) {
 			RequestError error = new RequestError(2, 
 					"invalid recipe name '" + searchTerm + "'. Value must have length > 0");
 			makeError(error);		

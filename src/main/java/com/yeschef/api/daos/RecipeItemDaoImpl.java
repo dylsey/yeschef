@@ -18,10 +18,9 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 	private static String selectAllRecipeItems = "SELECT * FROM recipeItems";
 
 	private static String selectRecipeItemsByRecipeId = "SELECT * " + "FROM recipeItems " + "WHERE recipeId = ?";
-	
+
 	private static String deleteRecipeItemsByRecipeId = "DELETE FROM recipeItems WHERE recipeId = ?";
-	
-	
+
 	// convenience method to make a List of any Recipe items that are needed for
 	// each method
 	private List<RecipeItem> makeRecipeItem(ResultSet result) throws SQLException {
@@ -40,9 +39,10 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 
 			myRecipeItems.add(recipeItem);
 		}
-
 		return myRecipeItems;
 	}
+
+
 //	not sure if this method is necessary   
 	@Override
 	public List<RecipeItem> getRecipeItems() {
@@ -84,7 +84,7 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 	public RecipeItem deleteRecipeItemsByRecipeId(Integer recipeId) {
 		List<RecipeItem> recipeItems = this.getRecipeItemsByRecipeId(recipeId);
 		RecipeItem recipeItemsToDelete = null;
-		
+
 		if (recipeItems.size() > 0) {
 			recipeItemsToDelete = recipeItems.get(0);
 			int updateRowCount = 0;
@@ -96,9 +96,9 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 				updateRowCount = ps.executeUpdate();
 				System.out.println("rows deleted: " + updateRowCount);
 			} catch (SQLException e) {
-				e.printStackTrace(); 
+				e.printStackTrace();
 			}
-		}	
+		}
 		return recipeItemsToDelete;
 	}
 
@@ -109,7 +109,7 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		
+
 			preparedStatement.setInt(1, recipeItem.getRecipeId());
 			preparedStatement.setString(2, recipeItem.getRecipeItem());
 			preparedStatement.setInt(3, recipeItem.getSpoonacularRecipeId());
@@ -118,7 +118,6 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 
 			preparedStatement.executeUpdate();
 
-			
 			try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					recipeItem.setId(generatedKeys.getInt(1));
