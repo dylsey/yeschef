@@ -20,6 +20,7 @@ public class RecipeService {
 	}
 
 	public List<Recipe> getRecipesById(Integer id) {
+		validateRecipeId(id);
 		return recipeDao.getRecipesById(id);
 	}
 	
@@ -28,12 +29,19 @@ public class RecipeService {
 	}
 	
 	public List<Recipe> searchRecipesByName(String searchTerm){
+		validateRecipeName(searchTerm);
 		return recipeDao.searchRecipesByName(searchTerm);
 	}
 	
+
+
 	public Recipe createRecipe(Recipe recipe) {		
 		return recipeDao.createRecipe(recipe);
 	}
+	
+	/*
+	 * Error handling methods
+	 */
 	
 	
 	private void makeError(RequestError error) {
@@ -42,6 +50,24 @@ public class RecipeService {
 				.build();
 		throw new WebApplicationException(response);
 	
+	}
+	
+	private void validateRecipeId(Integer id) {
+		if (id <= 0) {
+			RequestError error = new RequestError(1, 
+					"Invalid recipe id " + id + ". Value must be > 0.");
+			makeError(error);
+			
+		}
+	}
+	
+	private void validateRecipeName(String searchTerm) {
+		if (searchTerm.isEmpty()) {
+			RequestError error = new RequestError(2, 
+					"invalid recipe name '" + searchTerm + "'. Value must have length > 0");
+			makeError(error);		
+		}
+		
 	}
 
 }

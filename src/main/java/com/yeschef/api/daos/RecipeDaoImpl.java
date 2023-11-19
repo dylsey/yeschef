@@ -70,8 +70,6 @@ public class RecipeDaoImpl implements RecipeDao {
 		return myRecipes;
 	}
 
-
-
 	@Override
 	public List<Recipe> getRecipesById(Integer id) {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
@@ -137,6 +135,7 @@ public class RecipeDaoImpl implements RecipeDao {
 		return myRecipes;
 	}
 
+	//this method will need to be fed data from spoonacular 
 	@Override
 	public Recipe createRecipe(Recipe recipe) {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
