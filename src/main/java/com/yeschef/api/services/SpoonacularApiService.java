@@ -1,53 +1,63 @@
 package com.yeschef.api.services;
 
-import org.json.JSONObject;
-import jakarta.ws.rs.core.Response;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class SpoonacularApiService {
-	
-    private String spoonBaseUrl = "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com";
-    private final String apiKey = "e033f0fec8msh8822ae38ed8d4c7p1b7c6cjsn6d220a7560f2";
+	// base url
+	private final String spoonBaseUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com";
+	// these are key value pairs for the http header
+	private final String header1 = "x-rapidapi-key";
+	private final String apiKey = "e033f0fec8msh8822ae38ed8d4c7p1b7c6cjsn6d220a7560f2";
 
-    private String name;
-	private Integer id;//need to get this from spoonacular api call
-	private String imageUrl;//need to get this from spoonacular api call
+	private final String header2 = "x-rapidapi-host";
+	private final String hostKey = "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com";
 
+	private String name;
+	private Integer id; // need to get this from spoonacular api call
+	private String imageUrl; // need to get this from spoonacular api call
 
+	public void getRandomRecipes() throws IOException {
+		Integer numberOfRecipes = 1; // how to pass input into this variable?
 
- 
-	public HttpResponse<JsonNode> getRecipeData() {
-    	
-    	HttpResponse<JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?" + 										"query=pasta&type=main%20course&instructionsRequired=true&fillIngredients=true&addRecipeInformation="+
-    									"true&ignorePantry=false&sortDirection=desc&limitLicense=false&ranking=2")
-    			.header("X-RapidAPI-Key", apiKey)
-    			.header("X-RapidAPI-Host", spoonBaseUrl)
-    			.asJson();
-    	
-    	return response;
-    }
-	
+		// establish connection don't know how to do this w/o casting
+		try {
+			URL url = new URL(spoonBaseUrl + "/recipes/random?number=" + numberOfRecipes);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			// header values
+			connection.setRequestProperty(header1, apiKey);
+			connection.setRequestProperty(header2, hostKey);
+			//response header 
+			connection.setRequestProperty("Content-Type", "application/json");
+			
+			connection.setConnectTimeout(10000);
+			connection.setReadTimeout(10000);
+			connection.connect();
 
-    private JsonNode handleApiResponse(HttpResponse<JsonNode> response) {
-    	
-        if (response.isSuccess()) {
-            JsonNode apiResponse = response.getBody();
-            parseApiResponse(apiResponse);  // Pass the String to the parsing method
-        } else {
-            throw new RuntimeException("Failed to fetch data from Spoonacular API. Response code: " + response.getStatus());
-        }
-		return apiResponse;
-    }
+			System.out.println(url);
+			
+			// getting response code
+			Integer responseCode = connection.getResponseCode();
+			System.out.println(responseCode);
+			
+			 System.out.println("Response Message: " + connection.getResponseMessage());
 
-    public SpoonacularApiService parseApiResponse(JsonNode apiResponse) {
-        JSONObject jsonObject = new JSONObject(apiResponse);
-        name = jsonObject.getString("title");
-        id = jsonObject.getInt("spoonacularRecipeId");
-        imageUrl = jsonObject.getString("imageUrl");
-        
-        return new SpoonacularApiService();
-    }
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		SpoonacularApiService apiService = new SpoonacularApiService();
+		apiService.getRandomRecipes();
+	}
 }
+
+
 
