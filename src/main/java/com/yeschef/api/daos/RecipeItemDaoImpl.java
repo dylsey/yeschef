@@ -19,7 +19,12 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 
 	private static String selectRecipeItemsByRecipeId = "SELECT * " + "FROM recipeItems " + "WHERE recipeId = ?";
 
-	private static String deleteRecipeItemsByRecipeId = "DELETE FROM recipeItems WHERE recipeId = ?";
+	private static String deleteRecipeItemsByRecipeId = "DELETE " + "FROM recipeItems" + " WHERE recipeId = ?";
+
+	private static String createRecipeItem = "INSERT INTO "
+			+ "recipeItems (recipeId, name, spoonacularIngredientId, imageUrl, quantity) " + "VALUES (?, ?, ?, ?, ?)";
+
+	private static String selectNewRecipeItemId = "SELECT LAST_INSERT_ID() " + "AS 'recipeItemId'";
 
 	// convenience method to make a List of any Recipe items that are needed for
 	// each method
@@ -31,6 +36,8 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 			recipeItem.setId(result.getInt("id"));
 			recipeItem.setRecipeItem(result.getString("recipeItemName"));
 			recipeItem.setRecipeId(result.getInt("recipeId"));
+			// will there need to be logic to make sure this id is the same as the
+			// corresponding recipe?
 			recipeItem.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
 			recipeItem.setImageUrl(result.getString("imageUrl"));
 			recipeItem.setQuantity(result.getString("quantity"));
@@ -41,7 +48,6 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 		}
 		return myRecipeItems;
 	}
-
 
 //	not sure if this method is necessary   
 	@Override
@@ -92,7 +98,6 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 			try {
 				ps = connection.prepareStatement(deleteRecipeItemsByRecipeId);
 				ps.setInt(1, recipeId);
-				ps.executeUpdate();
 				updateRowCount = ps.executeUpdate();
 				System.out.println("rows deleted: " + updateRowCount);
 			} catch (SQLException e) {
@@ -103,30 +108,54 @@ public class RecipeItemDaoImpl implements RecipeItemDao {
 	}
 
 	@Override
-	public RecipeItem createRecipeItem(RecipeItem recipeItem) {
-		String sql = "INSERT INTO recipe_items (recipe_id, name, spoonacular_ingredient_id, image_url, quantity) "
-				+ "VALUES (?, ?, ?, ?, ?)";
-
+	public RecipeItem createRecipeItem(RecipeItem newRecipeItem, Integer recipeId) {
+		PreparedStatement statement = null;
+		
 		try {
-			PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-			preparedStatement.setInt(1, recipeItem.getRecipeId());
-			preparedStatement.setString(2, recipeItem.getRecipeItem());
-			preparedStatement.setInt(3, recipeItem.getSpoonacularRecipeId());
-			preparedStatement.setString(4, recipeItem.getImageUrl());
-			preparedStatement.setString(5, recipeItem.getQuantity());
-
-			preparedStatement.executeUpdate();
-
-			try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+			statement = connection.prepareStatement(createRecipeItem, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, recipeId);
+			statement.setString(2, newRecipeItem.getRecipeItem());
+			statement.setInt(3, newRecipeItem.getSpoonacularRecipeId());
+			statement.setString(4, newRecipeItem.getImageUrl());
+			statement.setString(5, newRecipeItem.getQuantity());
+			int rowCount = statement.executeUpdate();
+			System.out.println("rows inserted: " + rowCount);
+			
+			if (rowCount > 0) {
+				ResultSet generatedKeys = statement.getGeneratedKeys();
 				if (generatedKeys.next()) {
-					recipeItem.setId(generatedKeys.getInt(1));
+					int newRecipeItemId = generatedKeys.getInt(1);
+					newRecipeItem.setId(newRecipeItemId);
 				}
 			}
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+		return newRecipeItem;
+	}
+	
+//is this necessary if I am trying to set the item based on the Basis class and the OG SQL Recipe ID set? 	
+	@SuppressWarnings("unused")
+	private int getNewRecipeItemId() {
+		ResultSet rs = null;
+		Statement statement = null;
+		int newRecipeItemId = 0;
+
+		try {
+			statement = connection.createStatement();
+			rs = statement.executeQuery(selectNewRecipeItemId);
+			while (rs.next()) {
+				newRecipeItemId = rs.getInt("recipeItemId");
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return recipeItem;
+
+		return newRecipeItemId;
 	}
 
 }

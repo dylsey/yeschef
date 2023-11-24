@@ -1,12 +1,10 @@
 package com.yeschef.api.controllers;
 
 import java.util.List;
-
 import com.yeschef.api.models.Recipe;
 import com.yeschef.api.models.RecipeItem;
 import com.yeschef.api.services.RecipeItemService;
 import com.yeschef.api.services.RecipeService;
-
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -64,19 +62,19 @@ public class RecipeController {
 		return recipeItemService.getRecipeItemsByRecipeId(recipeId);
 	}
 	
-	//so far this method is not used or finished
-		@POST
-		@Consumes(MediaType.APPLICATION_JSON)
-		public Recipe createRecipe(Recipe recipe) {
-			return recipeService.createRecipe(recipe);
-		}
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Recipe createRecipe(Recipe newRecipe) {
+		return recipeService.createRecipe(newRecipe);
+	}
 	
+//	does this method work correctly? 
 	@POST
 	@Path("/items/{idValue}")
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public RecipeItem createRecipeItem(RecipeItem recipeItem, @PathParam("idValue") Integer recipeId) {
 		recipeItem.setRecipeId(recipeId);
-		return recipeItemService.createRecipeItem(recipeItem);
+		return recipeItemService.createRecipeItem(recipeItem, recipeId);
 	}
 	
 }

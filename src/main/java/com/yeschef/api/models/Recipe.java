@@ -8,6 +8,18 @@ public class Recipe {
 	private String name;
 	private Integer spoonacularRecipeId;//need to get this from spoonacular api call
 	private String imageUrl;//need to get this from spoonacular api call
+	private String recipeUrl;
+	
+	
+	public String getRecipeUrl() {
+		return recipeUrl;
+	}
+
+	//need to set this url via spoonacular api data
+	public void setRecipeUrl(String recipeUrl) {
+		this.recipeUrl = recipeUrl;
+	}
+
 	private LocalDateTime updateDateTime;
 	private LocalDateTime createDateTime;
 	
@@ -47,7 +59,7 @@ public class Recipe {
 	public Integer getSpoonacularRecipeId() {
 		return spoonacularRecipeId;
 	}
-	
+	// need to set this via spoonacular
 	public void setSpoonacularRecipeId(Integer spoonacularRecipeId) {
 		this.spoonacularRecipeId = spoonacularRecipeId;
 	}
@@ -55,13 +67,9 @@ public class Recipe {
 	public String getImageUrl() {
 		return imageUrl;
 	}
-	
+	//need to set this via spoonacular
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
-	}
+	}			
 	
-	
-	
-	
-
 }

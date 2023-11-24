@@ -1,12 +1,10 @@
 package com.yeschef.api.services;
 
 import java.util.List;
-
 import com.yeschef.api.models.RequestError;
 import com.yeschef.api.daos.RecipeDao;
 import com.yeschef.api.daos.RecipeDaoImpl;
 import com.yeschef.api.models.Recipe;
-
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
@@ -31,12 +29,10 @@ public class RecipeService {
 	public List<Recipe> searchRecipesByName(String searchTerm){
 		validateRecipeName(searchTerm);
 		return recipeDao.searchRecipesByName(searchTerm);
-	}
-	
+	}	
 
-
-	public Recipe createRecipe(Recipe recipe) {		
-		return recipeDao.createRecipe(recipe);
+	public Recipe createRecipe(Recipe newRecipe) {		
+		return recipeDao.createRecipe(newRecipe);
 	}
 	
 	/*
@@ -52,8 +48,8 @@ public class RecipeService {
 	
 	}
 	
-	private void validateRecipeId(Integer id) {
-		if (id < 0) {
+	private void validateRecipeId(Integer id ) {
+		if (id < 0 ) {
 			RequestError error = new RequestError(1, 
 					"Invalid recipe id " + id + ". Value must be > 0.");
 			makeError(error);

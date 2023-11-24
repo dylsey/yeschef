@@ -33,6 +33,16 @@ public class RecipeDaoImpl implements RecipeDao {
 			+ "FROM recipes "
 			+ "WHERE name LIKE ?";
 	
+	private static String createRecipe =			
+			"INSERT INTO recipes (name, spoonacularRecipeId, recipeUrl, imageUrl) "
+			+ "VALUES "
+			+ "(?, ?, ?, ?)";
+	
+	private static String selectNewRecipeId =
+			"SELECT LAST_INSERT_ID() "
+			+ "AS id";
+			
+	
 	//convenience method to make a list of recipes for each method
 	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
@@ -43,6 +53,7 @@ public class RecipeDaoImpl implements RecipeDao {
 			recipe.setId(result.getInt("id"));
 			recipe.setName(result.getString("name"));
 			recipe.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
+			recipe.setRecipeUrl(result.getString("recipeUrl"));
 			recipe.setImageUrl(result.getString("imageUrl"));
 			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
 			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
@@ -138,74 +149,46 @@ public class RecipeDaoImpl implements RecipeDao {
 
 	//this method will need to be fed data from spoonacular 
 	@Override
-	public Recipe createRecipe(Recipe recipe) {
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"INSERT INTO recipes (name, spoonacularRecipeId, imageUrl) VALUES (?, ?, ?)",
-				Statement.RETURN_GENERATED_KEYS)) {
-			preparedStatement.setString(1, recipe.getName());
-			preparedStatement.setInt(2, recipe.getSpoonacularRecipeId());
-			preparedStatement.setString(3, recipe.getImageUrl());
-			preparedStatement.executeUpdate();
-
-			// Retrieve the auto-generated ID
-			try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-				if (generatedKeys.next()) {
-					recipe.setId(generatedKeys.getInt(1));
-				}
-			}
-		} catch (SQLException e) {
+	public Recipe createRecipe(Recipe newRecipe) {
+		PreparedStatement statement = null;
+				
+		try {
+			statement = connection.prepareStatement(createRecipe, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, newRecipe.getName());
+			statement.setInt(2, newRecipe.getSpoonacularRecipeId());
+			statement.setString(3, newRecipe.getRecipeUrl());
+			statement.setString(4, newRecipe.getImageUrl());
+			int rowCount = statement.executeUpdate();
+			System.out.println("rows inserted: " + rowCount);
+			int newRecipeId = getNewRecipeId();
+			newRecipe.setId(newRecipeId);
+		} catch (SQLException e) {		
 			e.printStackTrace(); 
 		}
-		return recipe;
+		return newRecipe;
 	}
+	
+	//utility to make new recipeId
+	private int getNewRecipeId() {
+		ResultSet rs = null;
+		Statement statement = null;
+		int newRecipeId = 0;
 
-//	 @Override
-//	    public Recipe createRecipe(Recipe recipe) {
-//	        // First, call the Spoonacular API to get recipe data
-//	        SpoonacularApiData apiData = callSpoonacularApi(recipe.getSpoonacularRecipeId());
-//
-//	        // Update the recipe object with data from the API response
-//	        recipe.setName(apiData.getName());
-//	        recipe.setImageUrl(apiData.getImageUrl());
-//
-//	        // Now, insert the recipe into the database
-//	        try (PreparedStatement preparedStatement = connection.prepareStatement(
-//	                "INSERT INTO recipes (name, spoonacularRecipeId, imageUrl) VALUES (?, ?, ?)",
-//	                Statement.RETURN_GENERATED_KEYS)) {
-//	            preparedStatement.setString(1, recipe.getName());
-//	            preparedStatement.setInt(2, recipe.getSpoonacularRecipeId());
-//	            preparedStatement.setString(3, recipe.getImageUrl());
-//	            preparedStatement.executeUpdate();
-//
-//	            // Retrieve the auto-generated ID
-//	            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-//	                if (generatedKeys.next()) {
-//	                    recipe.setId(generatedKeys.getInt(1));
-//	                }
-//	            }
-//	        } catch (SQLException e) {
-//	            e.printStackTrace();
-//	        }
-//
-//	        return recipe;
-//	    }
-//
-//	    private SpoonacularApiData callSpoonacularApi(int spoonacularRecipeId) {
-//	        // Implement logic to make HTTP request to Spoonacular API
-//	        // Parse the API response and return relevant data
-//	        // You might use a library like HttpClient or HttpURLConnection for this
-//
-//	        // For example, you might create a class SpoonacularApiService that handles API requests
-//	        // SpoonacularApiService apiService = new SpoonacularApiService();
-//	        // return apiService.getRecipeData(spoonacularRecipeId);
-//
-//	        // For simplicity, let's assume a placeholder implementation
-//	        return new SpoonacularApiData("Spaghetti Bolognese", "https://example.com/spaghetti.jpg");
-//	    }
-//	}
-	
-	
-	
+		try {
+			statement = connection.createStatement();
+			rs = statement.executeQuery(selectNewRecipeId);
+			
+			while (rs.next()) {
+				newRecipeId = rs.getInt("id");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return newRecipeId;
+	}
+		
 	
 }
 
