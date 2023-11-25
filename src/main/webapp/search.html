@@ -9,21 +9,18 @@
 				<tr>
 				    <th>Recipe Id</th>
 					<th>Name</th>
-			<!-- 	<th>spoon id</th>  -->	
 					<th>Recipe URL</th>
 					<th>Image</th>
 					<th>Create Date</th>					
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="recipe in recipes" >
+				<tr ng-repeat="recipe in recipes" ng-click="goToRecipeView(recipe.id)">
 					<td>{{recipe.id}}</td>
 					<td>{{recipe.name}}</td>
-				<!-- 	<td>{{recipe.spoonacularrecipeid}}</td>  -->
 					<td>{{recipe.recipeUrl}}</td>
 					<td>{{recipe.imageUrl}}</td>
-					<td>{{recipe.createDateTime}}</td>	
-								
+					<td>{{recipe.createDateTime}}</td>								
 				</tr>
 			</tbody>		
 		</table>	

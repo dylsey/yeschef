@@ -1,0 +1,14 @@
+<div class="card mt-3" ng-if="recipe">
+    <div class="card-header text-secondary bg-dark">
+        <h4>This looks Delicious</h4>
+    </div>
+    <div class="card-body">
+        <img class="card-img-top" ng-src="{{recipe.imageUrl}}" alt="Recipe Image">
+        <div class="card-body">
+            <h4 class="card-title">{{recipe.name}}</h4>
+            <a href="#!" class="btn btn-primary" ng-href="{{recipe.recipeUrl}}" target="_blank">Go to Recipe</a>
+            <!-- Add to Meal Plan button (customize the ng-click based on your logic) -->
+            <button ng-click="addToMealPlan()" class="btn btn-success">Add to Meal Plan</button>
+        </div>
+    </div>
+</div>

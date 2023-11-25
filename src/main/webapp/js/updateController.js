@@ -9,7 +9,7 @@
  		
  		
  		var recipeId = $routeParams.recipeId;
- 		window.alert('id of movie passed from search: ' + recipeId)
+ 		window.alert('id of recipe passed from search: ' + recipeId)
  	
 	 
  

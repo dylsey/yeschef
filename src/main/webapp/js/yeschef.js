@@ -16,9 +16,13 @@
 	    templateUrl : "create.html",
 	    controller : "createController"
 	  })
-	  .when("/update/:recipeId", {
+	  .when("/update/", {
 	    templateUrl : "update.html",
 	    controller: "updateController"
+	  })
+	  .when("/recipes/:recipeId", {
+	    templateUrl : "recipe.html",
+	    controller : "recipeController"
 	  })
 	  .when("/stack", {
 	    templateUrl : "stack.html"

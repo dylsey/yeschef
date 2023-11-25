@@ -17,14 +17,13 @@
 				}, function(response) {
 					console.log('error http GET recipes: ' + response.status);
 				});
-				}
-			//	
-			//	$scope.goToUpdateView = function(recipeId){
-			//		//window.alert("recipe id: " + recipeId);
-			//		$location.path('/update/' + recipeId);
-			//	}
+		}
 
-//				$scope.getAllRecipes();
+		$scope.goToRecipeView = function(recipeId) {
+				window.alert("recipe id: " + recipeId);
+			$location.path('/recipes/' + recipeId);
+		}
 
-		})
+
+	})
 })()
