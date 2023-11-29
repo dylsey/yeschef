@@ -8,10 +8,13 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.yeschef.api.models.MealType;
 import com.yeschef.api.models.Recipe;
 
-public class RecipeDaoImpl implements RecipeDao {
 
+public class RecipeDaoImpl implements RecipeDao {
+	
 	private Connection connection = MariaDbUtil.getConnection();
 	
 
@@ -24,6 +27,12 @@ public class RecipeDaoImpl implements RecipeDao {
 			"FROM recipes "
 			+ "WHERE id = ?";
 	
+	private static String selectRecipesByMealType = 
+			"SELECT * " +
+			"FROM recipes " +
+		    "WHERE mealType = ?";		
+	
+	
 	private static String deleteRecipeById = 
 			"DELETE FROM recipes " 
 			+ "WHERE id = ?";
@@ -34,9 +43,9 @@ public class RecipeDaoImpl implements RecipeDao {
 			+ "WHERE name LIKE ?";
 	
 	private static String createRecipe =			
-			"INSERT INTO recipes (name, spoonacularRecipeId, recipeUrl, imageUrl) "
+			"INSERT INTO recipes (name, recipeUrl, imageUrl) "
 			+ "VALUES "
-			+ "(?, ?, ?, ?)";
+			+ "(?, ?, ?)";
 	
 	private static String selectNewRecipeId =
 			"SELECT LAST_INSERT_ID() "
@@ -46,15 +55,18 @@ public class RecipeDaoImpl implements RecipeDao {
 	//convenience method to make a list of recipes for each method
 	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
-
 		while (result.next()) {
 
 			Recipe recipe = new Recipe();
 			recipe.setId(result.getInt("id"));
 			recipe.setName(result.getString("name"));
-			recipe.setSpoonacularRecipeId(result.getInt("spoonacularRecipeId"));
 			recipe.setRecipeUrl(result.getString("recipeUrl"));
 			recipe.setImageUrl(result.getString("imageUrl"));
+			
+			String mealTypeString = result.getString("mealType");
+			MealType mealType = MealType.convertStringtoMealType(mealTypeString);
+			recipe.setMealType(mealType);
+			
 			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
 			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
 
@@ -101,6 +113,27 @@ public class RecipeDaoImpl implements RecipeDao {
 
 		return myRecipes;
 	}
+	
+	@Override
+	public List<Recipe> getRecipesByMealType(MealType mealType) {
+		List<Recipe> myRecipes = new ArrayList<Recipe>();
+		ResultSet result = null;
+		PreparedStatement statement = null;
+		
+		try {
+			statement = connection.prepareStatement(selectRecipesByMealType);
+			statement.setString(1, mealType.toString());
+			
+			result = statement.executeQuery();
+			myRecipes = makeRecipe(result);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return myRecipes;
+	}
+				
 
 	@Override
 	public Recipe deleteRecipeById(Integer id) {
@@ -125,9 +158,6 @@ public class RecipeDaoImpl implements RecipeDao {
 		return recipeToDelete;
 	}
 
-	/*
-	 * Need to figure out how to pass this method the searchTerm taken from the JS entered into a search bar or a drop down menu
-	 */
 	@Override
 	public List<Recipe> searchRecipesByName(String searchTerm) {
 		List<Recipe> myRecipes = new ArrayList<>();
@@ -147,17 +177,16 @@ public class RecipeDaoImpl implements RecipeDao {
 		return myRecipes;
 	}
 
-	//this method will need to be fed data from spoonacular 
+
 	@Override
 	public Recipe createRecipe(Recipe newRecipe) {
 		PreparedStatement statement = null;
 				
 		try {
-			statement = connection.prepareStatement(createRecipe, Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement(createRecipe);
 			statement.setString(1, newRecipe.getName());
-			statement.setInt(2, newRecipe.getSpoonacularRecipeId());
-			statement.setString(3, newRecipe.getRecipeUrl());
-			statement.setString(4, newRecipe.getImageUrl());
+			statement.setString(2, newRecipe.getRecipeUrl());
+			statement.setString(3, newRecipe.getImageUrl());
 			int rowCount = statement.executeUpdate();
 			System.out.println("rows inserted: " + rowCount);
 			int newRecipeId = getNewRecipeId();
@@ -188,7 +217,8 @@ public class RecipeDaoImpl implements RecipeDao {
 
 		return newRecipeId;
 	}
-		
+
+	
 	
 }
 

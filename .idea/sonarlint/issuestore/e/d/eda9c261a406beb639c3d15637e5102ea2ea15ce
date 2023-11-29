@@ -1,0 +1,36 @@
+
+{
+java:S2293:"YReplace the type specification in this constructor call with the diamond operator ("<>").(¾Æ½Ôûÿÿÿÿ8¶Ìà‘Á1
+u
+java:S2293x"YReplace the type specification in this constructor call with the diamond operator ("<>").(öˆêc8·Ìà‘Á1
+v
+java:S2293’"YReplace the type specification in this constructor call with the diamond operator ("<>").(öˆêc8·Ìà‘Á1
+g
+java:S1192"JDefine a constant instead of duplicating this literal "SELECT * " 3 times.(ÙëÉˆ8œ´ËËÁ1
+r
+java:S2095Ö"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(¾–¡ƒûÿÿÿÿ8¸µËËÁ1
+r
+java:S2095—"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(çÜ÷Õûÿÿÿÿ8¸µËËÁ1
+j
+java:S2095¬"GUse try-with-resources or close this "Statement" in a "finally" clause.(‡²€·ıÿÿÿÿ8Æºí‘Á1
+i
+java:S2095g"GUse try-with-resources or close this "Statement" in a "finally" clause.(‡²€·ıÿÿÿÿ8ºµËËÁ1
+q
+java:S2095S"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(¶„µïÿÿÿÿÿ8ºµËËÁ1
+m
+java:S2095Œ"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(Ë™óä8ºµËËÁ1
+r
+java:S2095¾"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(Áîíÿÿÿÿÿ8ºµËËÁ1
+r
+java:S2095õ"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(—ç¯ùøÿÿÿÿ8ºµËËÁ1
+L	java:S106W"+Replace this use of System.out by a logger.(Àç‹ÿÿÿÿÿ8ßµËËÁ1
+`
+java:S1854ß"BRemove this useless assignment to local variable "updateRowCount".(Ü›õ“8ñµËËÁ1
+Q
+java:S1481ß"3Remove this unused "updateRowCount" local variable.(Ü›õ“8÷µËËÁ1
+\
+java:S1155ğ">Use isEmpty() to check whether the collection is empty or not.(¦ùğ8úµËËÁ1
+M	java:S106ø"+Replace this use of System.out by a logger.(ÆñÑşÿÿÿÿ8üµËËÁ1
+a
+java:S1155ˆ">Use isEmpty() to check whether the collection is empty or not.(¯àç¿øÿÿÿÿ8şµËËÁ1
+M	java:S106"+Replace this use of System.out by a logger.(ÆñÑşÿÿÿÿ8€¶ËËÁ1

@@ -8,13 +8,13 @@
     yeschefapp.controller('recipeController', function($scope, $http, $routeParams) {           
 
         $scope.getRecipesById = function() {
-			var recipeId = $routeParams.recipeId;
-            $http.get("/api/webapi/recipes/" + recipeId)
+			
+            $http.get("/api/webapi/recipes/" + $routeParams.recipeId)
                 .then(function(response) {
 					var recipes = response.data;
 					if (recipes.length == 1) {
 						$scope.recipe = recipes[0];
-						window.alert('recipe id: ' + $scope.recipe.id);	
+						//window.alert('recipe id: ' + $scope.recipe.id);	
 					} else {
 						//error message
 					}

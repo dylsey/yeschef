@@ -1,31 +1,74 @@
+<style>
+body {
+	background: url(image/foodcubes.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+.card-image {
+	max-height: 150px; /* Adjust the maximum height of the card image */
+	max-width: 150px;
+}
+
+.text-exempt {
+        position: relative; /* Ensure z-index works */
+        z-index: 1; /* Place the text above the background */
+        opacity: 1; /* Make text fully opaque */
+        color: #000; /* Set text color to white (or your preferred dark color) */
+ }
+
+.has-bg-image {
+	position: relative;
+}
+
+.has-bg-image {
+    background-image: url(./image/granbg.jpg);
+    background-size: cover;
+    position: relative;
+    opacity: 0.5; /* Adjust the opacity of the background image */
+    z-index: -1;
+    color: #000;
+    text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5); /* Add a subtle white text shadow for better visibility */
+}
+
+.card {
+    position: relative;
+    z-index: 0;
+}
+
+.card-body {
+    position: relative;
+    z-index: 1;
+}
+
+</style>
 <div class="card mt-3">
-	<div class="card-header text-secondary bg-dark">
-		<h4>Search For Recipes</h4>
-		<button class="btn btn-success"	ng-click="getAllRecipes()">Refresh recipes</button>
+	<div class="card-header text-dark bg-secondary">
+		<h4>Our Favorite Recipes</h4>
+		<button class="btn btn-success" ng-click="getAllRecipes()">Browse
+			Recipes</button>
+		<span class="float-bottom"></span> Search: <input type="text"
+			maxlength="15" ng-model="searchValue"
+		>
 	</div>
-	<div class="card-body">
-		<table class="table table-hover">
-			<thead class="thead-light">
-				<tr>
-				    <th>Recipe Id</th>
-					<th>Name</th>
-					<th>Recipe URL</th>
-					<th>Image</th>
-					<th>Create Date</th>					
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="recipe in recipes" ng-click="goToRecipeView(recipe.id)">
-					<td>{{recipe.id}}</td>
-					<td>{{recipe.name}}</td>
-					<td>{{recipe.recipeUrl}}</td>
-					<td>{{recipe.imageUrl}}</td>
-					<td>{{recipe.createDateTime}}</td>								
-				</tr>
-			</tbody>		
-		</table>	
+	<div class="card-body shadow">
+		<div class="card-columns">
+			<div class="card mx-auto shadow " ng-repeat="recipe in recipes | filter: searchValue"
+				ng-click="goToRecipeView(recipe.id)"
+			>
+				<img class="img-thumbnail card-img-top card-image"
+					ng-src="{{recipe.imageUrl}}" alt="recipe image"
+				>
+				<div class="card-body has-bg-image">
+					<h5 class="card-title text-exempt">{{recipe.name}}</h5>
+					<p class="card-text text-exempt">{{recipe.recipeUrl | limitTo:30}}...</p>
+					<!--  -->
+				</div>
+				<div class="card-footer">
+					<small class="text-muted">Recipe Added:
+						{{recipe.createDateTime}}</small>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="card-footer text-secondary bg-dark">
-		Please select a recipe for update/delete
-	</div>
+	<div class="card-footer text-secondary bg-dark"></div>
 </div>

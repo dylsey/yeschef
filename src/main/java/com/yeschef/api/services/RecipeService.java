@@ -4,6 +4,7 @@ import java.util.List;
 import com.yeschef.api.models.RequestError;
 import com.yeschef.api.daos.RecipeDao;
 import com.yeschef.api.daos.RecipeDaoImpl;
+import com.yeschef.api.models.MealType;
 import com.yeschef.api.models.Recipe;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,12 @@ public class RecipeService {
 		return recipeDao.getRecipesById(id);
 	}
 	
+	public List<Recipe> getRecipesByMealType(MealType mealType){
+		return recipeDao.getRecipesByMealType(mealType);
+	}
+	
 	public Recipe deleteRecipeById(Integer id) {
+		validateRecipeId(id);
 		return recipeDao.deleteRecipeById(id);
 	}
 	
@@ -38,7 +44,6 @@ public class RecipeService {
 	/*
 	 * Error handling methods
 	 */
-	
 	
 	private void makeError(RequestError error) {
 		Response response = Response.status(400)

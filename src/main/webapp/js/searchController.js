@@ -8,7 +8,6 @@
 	yeschefapp.controller('searchController', function($scope, $http, $location) {
 
 
-
 		$scope.getAllRecipes = function() {
 			$http.get("/api/webapi/recipes")
 				.then(function(response) {
@@ -20,7 +19,7 @@
 		}
 
 		$scope.goToRecipeView = function(recipeId) {
-				window.alert("recipe id: " + recipeId);
+				//window.alert("recipe id: " + recipeId);
 			$location.path('/recipes/' + recipeId);
 		}
 
