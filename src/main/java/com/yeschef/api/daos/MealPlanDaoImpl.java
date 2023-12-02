@@ -24,12 +24,14 @@ public class MealPlanDaoImpl implements MealPlanDao {
 
 	private static String selectRecipesFromMealPlanById = "SELECT * " + "FROM recipes " + "WHERE mealPlanId = ?";
 
-	private static String addRecipeToMealPlan = "INSERT INTO "
-			+ "mealPlan (id, recipeId, name, recipeUrl, imageUrl, mealType) " + "VALUES (?, ?, ?, ?, ?, ?)";
+	private static String addRecipeToMealPlan = "UPDATE recipes " + "SET mealPlanId = ? " + "WHERE id = ?";
 
 	private static String deleteMealPlanById = "DELETE FROM " + "mealPlan " + "WHERE id = ?";
 
-	private static String deleteRecipesFromMealPlan = "DELETE FROM recipes " + "WHERE mealPlanId = ? " + "AND id = ?";
+	private static String removeRecipeFromMealPlan = "UPDATE recipes " + "SET mealPlanId = NULL "
+			+ "WHERE mealPlanId = ? " + "AND id = ?";
+
+	private static String selectRecipesById = "SELECT * " + "FROM recipes " + "WHERE id = ?";
 
 	/*
 	 * End of SQL statements
@@ -47,13 +49,37 @@ public class MealPlanDaoImpl implements MealPlanDao {
 			mealPlan.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
 
 			// also need to get the recipes associated with the meal plan
-			List<Recipe> recipes = getRecipesFromMealPlanById(mealPlan.getId());
+			List<Recipe> recipes = getRecipesFromMealPlanByMealPlanId(mealPlan.getId());
 			mealPlan.setRecipes(recipes);
 
 			myMealPlans.add(mealPlan);
 		}
 
 		return myMealPlans;
+	}
+
+	// brought in convenience method from Recipe Impl class to help make recipes
+	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
+		List<Recipe> myRecipes = new ArrayList<Recipe>();
+		while (result.next()) {
+
+			Recipe recipe = new Recipe();
+			recipe.setId(result.getInt("id"));
+			recipe.setName(result.getString("name"));
+			recipe.setRecipeUrl(result.getString("recipeUrl"));
+			recipe.setImageUrl(result.getString("imageUrl"));
+
+			String mealTypeString = result.getString("mealType");
+			MealType mealType = MealType.convertStringtoMealType(mealTypeString);
+			recipe.setMealType(mealType);
+
+			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
+			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
+
+			myRecipes.add(recipe);
+		}
+
+		return myRecipes;
 	}
 
 	@Override
@@ -74,6 +100,26 @@ public class MealPlanDaoImpl implements MealPlanDao {
 		}
 
 		return myMealPlans;
+	}
+
+	@Override
+	public List<MealPlan> getMealPlansById(Integer id) {
+		List<MealPlan> mealPlans = new ArrayList<MealPlan>();
+		ResultSet result = null;
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection.prepareStatement(selectMealPlanById);
+			statement.setInt(1, id);
+
+			result = statement.executeQuery();
+			mealPlans = makeMealPlan(result);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return mealPlans;
 	}
 
 	@Override
@@ -115,39 +161,101 @@ public class MealPlanDaoImpl implements MealPlanDao {
 		return newMealPlanId;
 	}
 
-//brought in convenience method from Recipe Impl class to help make recipes	
-	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
+	@Override
+	public List<Recipe> getRecipesById(Integer id) {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
-		while (result.next()) {
+		ResultSet result = null;
+		PreparedStatement statement = null;
 
-			Recipe recipe = new Recipe();
-			recipe.setId(result.getInt("id"));
-			recipe.setName(result.getString("name"));
-			recipe.setRecipeUrl(result.getString("recipeUrl"));
-			recipe.setImageUrl(result.getString("imageUrl"));
+		try {
+			statement = connection.prepareStatement(selectRecipesById);
+			statement.setInt(1, id);
 
-			String mealTypeString = result.getString("mealType");
-			MealType mealType = MealType.convertStringtoMealType(mealTypeString);
-			recipe.setMealType(mealType);
+			result = statement.executeQuery();
+			myRecipes = makeRecipe(result);
 
-			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
-			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
-
-			myRecipes.add(recipe);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 		return myRecipes;
 	}
 
+
 	@Override
-	public List<Recipe> getRecipesFromMealPlanById(Integer mealPlanId) {
+	public Recipe addRecipeToMealPlanByMealPlanId(Integer mealPlanId, Integer recipeId) {
+
+		List<Recipe> recipes = this.getRecipesById(recipeId);
+		Recipe recipeToAdd = null;
+		ResultSet result = null;
+
+		if (recipes.size() > 0) {
+			recipeToAdd = recipes.get(0);
+			PreparedStatement statement = null;
+
+			try {
+				statement = connection.prepareStatement(addRecipeToMealPlan);
+				statement.setInt(1, mealPlanId);
+				statement.setInt(2, recipeId);
+				int updateRowCount = statement.executeUpdate();
+
+				// result = statement.executeQuery();
+				// recipes = makeRecipe(result);
+
+				// recipeToAdd = makeRecipe(result);
+
+				System.out.println("id: " + mealPlanId);
+				System.out.println("recipeId: " + recipeId);
+				System.out.println("rows updated: " + updateRowCount);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return recipeToAdd;
+	}
+
+	@Override
+	public Recipe removeRecipeFromMealPlanByMealPlanId(Integer mealPlanId, Integer recipeId) {
+		List<Recipe> recipes = this.getRecipesById(recipeId);
+		Recipe recipeToRemove = null;
+
+
+		if (recipes.size() > 0) {
+			recipeToRemove = recipes.get(0);
+			PreparedStatement statement = null;
+
+			try {
+				statement = connection.prepareStatement(removeRecipeFromMealPlan);
+				statement.setInt(1, mealPlanId);
+				statement.setInt(2, recipeId);
+				int updateRowCount = statement.executeUpdate();
+
+				// result = statement.executeQuery();
+				// recipes = makeRecipe(result);
+
+				// recipeToAdd = makeRecipe(result);
+
+				System.out.println("id: " + mealPlanId);
+				System.out.println("recipeId: " + recipeId);
+				System.out.println("rows updated: " + updateRowCount);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return recipeToRemove;
+	}
+
+	@Override
+	public List<Recipe> getRecipesFromMealPlanByMealPlanId(Integer id) {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
 		ResultSet result = null;
 		PreparedStatement statement = null;
 
 		try {
 			statement = connection.prepareStatement(selectRecipesFromMealPlanById);
-			statement.setInt(1, mealPlanId);
+			statement.setInt(1, id);
 
 			result = statement.executeQuery();
 			myRecipes = makeRecipe(result);
@@ -161,51 +269,8 @@ public class MealPlanDaoImpl implements MealPlanDao {
 	}
 
 	@Override
-	public List<MealPlan> getMealsPlanById(Integer id) {
-		List<MealPlan> mealPlans = new ArrayList<>();
-		ResultSet result = null;
-		PreparedStatement statement = null;
-
-		try {
-			statement = connection.prepareStatement(selectMealPlanById);
-			statement.setInt(1, id);
-
-			result = statement.executeQuery();
-			mealPlans = makeMealPlan(result);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return mealPlans;
-	}
-
-	@Override
-	public Recipe addRecipeToMealPlanById(Integer id, Recipe recipe) {
-		Recipe recipeToAdd = null;
-		PreparedStatement statement = null;
-
-		try {
-			statement = connection.prepareStatement(addRecipeToMealPlan);
-			statement.setInt(1, recipe.getMealPlanId());
-			statement.setInt(2, recipe.getId());
-			statement.setString(3, recipe.getName());
-			statement.setString(4, recipe.getRecipeUrl());
-			statement.setString(5, recipe.getImageUrl());
-			statement.setString(6, recipe.getMealType().toString());
-
-			int updateRowCount = statement.executeUpdate();
-			recipeToAdd = recipe;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return recipeToAdd;
-
-	}
-
-	@Override
 	public MealPlan deleteMealPlanById(Integer id) {
-		List<MealPlan> mealPlans = this.getMealsPlanById(id);
+		List<MealPlan> mealPlans = this.getMealPlansById(id);
 		MealPlan mealPlanToDelete = null;
 
 		if (mealPlans.size() > 0) {
@@ -225,28 +290,4 @@ public class MealPlanDaoImpl implements MealPlanDao {
 		return mealPlanToDelete;
 	}
 
-	@Override
-	public Recipe deleteRecipeFromMealPlanById(Integer id, Integer recipeId) {
-
-		List<Recipe> recipes = this.getRecipesFromMealPlanById(id);
-		Recipe recipeToDelete = null;
-		PreparedStatement statement = null;
-
-		if (recipes.size() > 0) {
-			recipeToDelete = recipes.get(0);
-			int updateRowCount = 0;
-			try {
-				statement = connection.prepareStatement(deleteRecipesFromMealPlan);
-				statement.setInt(1, id);
-				statement.setInt(2, recipeId);
-				updateRowCount = statement.executeUpdate();
-				System.out.println("rows deleted: " + updateRowCount);
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return recipeToDelete;
-	}
 }

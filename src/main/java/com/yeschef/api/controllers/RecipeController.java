@@ -1,9 +1,9 @@
 package com.yeschef.api.controllers;
 
+
 import java.util.List;
 
-
-
+import com.yeschef.api.models.MealType;
 import com.yeschef.api.models.Recipe;
 
 import com.yeschef.api.services.RecipeService;
@@ -29,13 +29,17 @@ public class RecipeController {
 		return recipeService.getRecipes();
 	}
 
-	
-
 	// pulls recipe in home database based on SQL's given id number
 	@GET
 	@Path("/{idValue}")
 	public List<Recipe> getRecipesById(@PathParam("idValue") Integer id) {
 		return recipeService.getRecipesById(id);
+	}
+	
+	@GET 
+	@Path("/random")
+	public List<Recipe> getRandomRecipe() {
+		return recipeService.getRandomRecipe();
 	}
 
 	// will I need to feed this method input from a search box on the home page?
@@ -44,6 +48,24 @@ public class RecipeController {
 	public List<Recipe> searchRecipesByName(@PathParam("searchTerm") String searchTerm) {
 		return recipeService.searchRecipesByName(searchTerm);
 	}
+	
+//	@GET
+//	@Path("/mealtype/{mealtype}")
+//	public List<Recipe> getRecipesByMealType(@PathParam("mealtype") MealType mealType) {
+//		return recipeService.getRecipesByMealType(mealType);
+//	}
+	
+	@GET
+	@Path("/mealtype/{mealtype}")
+	public List<Recipe> getRecipesByMealType(@PathParam("mealtype") String mealTypeString) {
+	    MealType mealType = MealType.convertStringtoMealType(mealTypeString);
+//	    if (mealType == null) {
+//	        // Handle invalid mealTypeString, return an error response or empty list as needed
+//	        return Collections.emptyList();
+//	    }
+	    return recipeService.getRecipesByMealType(mealType);
+	}
+
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

@@ -8,6 +8,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -26,15 +27,15 @@ public class MealPlanController {
 	}
 	
 	@GET
-	@Path("/mealplans/{idValue}")
-	public List<Recipe> getMealPlansById(@PathParam("idValue") Integer id) {
-		return mealPlanService.getRecipesFromMealPlanById(id);
+	@Path("/{idValue}")
+	public List<MealPlan> getMealPlansById(@PathParam("idValue") Integer id) {
+		return mealPlanService.getMealPlansById(id);
 	}
 	
 	@GET
-	@Path("/mealplans/{}")
-	public List<Recipe> getRecipesFromMealPlanById(@PathParam("") Integer id) {
-		return mealPlanService.getRecipesFromMealPlanById(id);
+	@Path("/{idValue}/recipes")
+	public List<Recipe> getRecipesFromMealPlanById(@PathParam("idValue") Integer id) {
+		return mealPlanService.getRecipesFromMealPlanByMealPlanId(id);
 	}
 	
 	@POST
@@ -43,18 +44,27 @@ public class MealPlanController {
 		return mealPlanService.createMealPlan(newMealPlan);
 	}
 	
-	@DELETE
-	@Path("/mealplans/{idValue}")
-	public MealPlan deleteMealPlanById(@PathParam("idValue") Integer id) {
-		return mealPlanService.deleteMealPlanById(id);
+	@PUT
+	@Path("/{idValue}/addrecipes/{recipeId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Recipe addRecipeToMealPlanById(@PathParam("idValue") Integer id, @PathParam("recipeId") Integer recipeId) {
+		return mealPlanService.addRecipeToMealPlanByMealPlanId(id, recipeId);
+	}
+	
+	@PUT
+	@Path("/{idValue}/removerecipes/{recipeId}")
+//	@Consumes(MediaType.APPLICATION_JSON)
+	public Recipe removeRecipeFromMealPlanById(@PathParam("idValue") Integer id, @PathParam("recipeId") Integer recipeId) {
+		return mealPlanService.removeRecipeFromMealPlanByMealPlanId(id, recipeId);
 	}
 	
 	@DELETE
 	@Path("/{idValue}")
-	public Recipe deleteRecipeFromMealPlanById(@PathParam("idValue/idValue") Integer id, Integer recipeId) {
-		return mealPlanService.deleteRecipeFromMealPlanById(id, recipeId);
+	public MealPlan deleteMealPlanById(@PathParam("idValue") Integer id) {
+		return mealPlanService.deleteMealPlanByMealPlanId(id);
 	}
 	
+
 	
 }
 

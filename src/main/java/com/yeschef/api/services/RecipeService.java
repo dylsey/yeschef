@@ -1,6 +1,8 @@
 package com.yeschef.api.services;
 
 import java.util.List;
+import java.util.Random;
+
 import com.yeschef.api.models.RequestError;
 import com.yeschef.api.daos.RecipeDao;
 import com.yeschef.api.daos.RecipeDaoImpl;
@@ -21,6 +23,10 @@ public class RecipeService {
 	public List<Recipe> getRecipesById(Integer id) {
 		validateRecipeId(id);
 		return recipeDao.getRecipesById(id);
+	}
+	
+	public List<Recipe> getRandomRecipe() {
+		return recipeDao.getRandomRecipe();
 	}
 	
 	public List<Recipe> getRecipesByMealType(MealType mealType){

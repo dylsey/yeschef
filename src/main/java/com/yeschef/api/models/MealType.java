@@ -1,7 +1,7 @@
 package com.yeschef.api.models;
 
 public enum MealType {
-	Beef, Pork, Bird, Fish, Vegetarian, Vegan;
+	Beef, Pork, Bird, Seafood, Vegetarian, Vegan;
 	
 	public static MealType convertStringtoMealType(String value) {
 		MealType myMealType = null;

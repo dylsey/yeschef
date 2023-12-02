@@ -8,10 +8,14 @@ import com.yeschef.api.models.Recipe;
 public interface MealPlanDao {
 
 	public List<MealPlan> getMealPlans();
-	public List<MealPlan> getMealsPlanById(Integer id);	
-	public List<Recipe> getRecipesFromMealPlanById(Integer id);	
+	public List<MealPlan> getMealPlansById(Integer id);	
+	public List<Recipe> getRecipesFromMealPlanByMealPlanId(Integer id);	
 	public MealPlan createMealPlan(MealPlan newMealPlan);	
-	public MealPlan deleteMealPlanById(Integer id);			
-	public Recipe deleteRecipeFromMealPlanById(Integer id, Integer recipeId);
-	public Recipe addRecipeToMealPlanById(Integer id, Recipe recipe);	
+	public Recipe addRecipeToMealPlanByMealPlanId(Integer id, Integer recipeId);
+	public Recipe removeRecipeFromMealPlanByMealPlanId(Integer id, Integer recipeId);
+	
+	public MealPlan deleteMealPlanById(Integer id);
+	List<Recipe> getRecipesById(Integer id);			
+
+
 }
