@@ -12,12 +12,12 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+
 import jakarta.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/mealplans")
 public class MealPlanController {
-
 
 	private MealPlanService mealPlanService = new MealPlanService();
 
@@ -25,46 +25,50 @@ public class MealPlanController {
 	public List<MealPlan> getMealPlans() {
 		return mealPlanService.getMealPlans();
 	}
-	
+
 	@GET
 	@Path("/{idValue}")
 	public List<MealPlan> getMealPlansById(@PathParam("idValue") Integer id) {
 		return mealPlanService.getMealPlansById(id);
 	}
-	
+
 	@GET
 	@Path("/{idValue}/recipes")
 	public List<Recipe> getRecipesFromMealPlanById(@PathParam("idValue") Integer id) {
 		return mealPlanService.getRecipesFromMealPlanByMealPlanId(id);
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public MealPlan createMealPlan(MealPlan newMealPlan) {
 		return mealPlanService.createMealPlan(newMealPlan);
 	}
-	
+
 	@PUT
 	@Path("/{idValue}/addrecipes/{recipeId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Recipe addRecipeToMealPlanById(@PathParam("idValue") Integer id, @PathParam("recipeId") Integer recipeId) {
 		return mealPlanService.addRecipeToMealPlanByMealPlanId(id, recipeId);
 	}
-	
+
 	@PUT
 	@Path("/{idValue}/removerecipes/{recipeId}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-	public Recipe removeRecipeFromMealPlanById(@PathParam("idValue") Integer id, @PathParam("recipeId") Integer recipeId) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Recipe removeRecipeFromMealPlanById(@PathParam("idValue") Integer id,
+			@PathParam("recipeId") Integer recipeId) {
 		return mealPlanService.removeRecipeFromMealPlanByMealPlanId(id, recipeId);
 	}
-	
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public MealPlan updateMealPlan(MealPlan updateMealPlan) {
+		return mealPlanService.updateMealPlan(updateMealPlan);
+	}
+
 	@DELETE
 	@Path("/{idValue}")
 	public MealPlan deleteMealPlanById(@PathParam("idValue") Integer id) {
 		return mealPlanService.deleteMealPlanByMealPlanId(id);
 	}
-	
 
-	
 }
-

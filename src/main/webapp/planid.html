@@ -50,31 +50,37 @@ body {
 </style>
 <div class="card mt-3">
 	<div class="card-header text-dark bg-secondary">
-		<h4>Our Favorite Recipes</h4>
-		<button class="btn btn-success" ng-click="getAllRecipes()">Browse
-			Recipes</button>
-		<button class="btn btn-success" ng-click="getRandomRecipe()">Recipe Roulette
-			</button>
-		<button class="btn btn-success" ng-click="goToCreateRecipeView()">Add
-			a New Recipe</button>
+		<h4>Meal Plan Id: {{mealPlan.id}}</h4>
+		<h4>Meal Plan Name: {{mealPlanNameCurrent}}</h4>
+		<!-- Input field for updating the meal plan name -->
+		<div class="form-group">
+			<label for="mealPlanName">New Meal Plan Name:</label> 
+			<input type="text" class="form-control" id="mealPlanName"
+				ng-model="mealPlan.mealPlanName">
+		</div>
+		<button class="btn btn-success" ng-click="updateMealPlan()">Update
+			Meal Name</button>
+		<button class="btn btn-success" ng-click="goToRecipeBrowse()">Browse Recipes to Add</button>
+		<button class="btn btn-danger" ng-click="deleteMealPlan()">Delete Meal Plan</button>
 		<span class="float-bottom"></span> Search: <input type="text"
 			maxlength="15" ng-model="searchValue">
 	</div>
 	<div class="card-body shadow">
 		<div class="card-columns">
-			<div class="card mx-auto shadow "
-				ng-repeat="recipe in recipes | filter: searchValue"
-				ng-click="goToRecipeView(recipe.id)">
-				<img class="custom-img img-thumbnail card-img-top card-image"
-					ng-src="{{recipe.imageUrl}}" alt="recipe image">
-				<div class="card-body has-bg-image">
-					<h5 class="card-title text-exempt">{{recipe.name}}</h5>
-					<p class="card-text text-exempt">{{recipe.recipeUrl |
-						limitTo:30}}...</p>
-				</div>
-				<div class="card-footer">
-					<small class="text-muted">Recipe Added:
-						{{recipe.createDateTime}}</small>
+			<div class="card mx-auto shadow"
+				 ng-repeat="recipe in mealPlan.recipes | filter: searchValue" 
+				 ng-click="goToRecipeView(recipe.id)">
+					<img class="custom-img img-thumbnail card-img-top card-image"
+						ng-src="{{recipe.imageUrl}}" alt="recipe image">
+					<div class="card-body has-bg-image">
+						<h5 class="card-title text-exempt">{{recipe.name}}</h5>
+						<p class="card-text text-exempt">{{recipe.recipeUrl |
+							limitTo:30}}...</p>
+					</div>
+					<div class="card-footer">
+						<small class="text-muted">Recipe Added:
+							{{recipe.createDateTime}}</small>
+					</div>
 				</div>
 			</div>
 		</div>

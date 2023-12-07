@@ -4,12 +4,6 @@ body {
 	background-size: cover;
 }
 
-.card-image {
-	max-height: 150px; /* Adjust the maximum height of the card image */
-	max-width: 150px;
-	object-fit: cover; /* Ensure the image covers the entire space */
-}
-
 .has-bg-image {
 	position: relative;
 }
@@ -30,27 +24,47 @@ body {
 	/* Add a subtle white text shadow for better visibility */
 }
 
+.custom-img {
+	width: 400px;
+	height: 400px;
+	object-fit: cover;
+}
 </style>
-<div class=" container-fluid col-sm-4 justify-content-center">
-	<div class="row">
-		<div class="card col-sm-9 mt-3" ng-if="recipe">
+<div class="container-fluid pt-3 justify-content-center">
+	 <div class="row">
+		<div class="card mx-auto mt-3" ng-if="recipe">
 			<div class="card-header text-dark bg-secondary">
-				<h4>This looks Delicious</h4>
+				<!-- <h4>This looks Delicious</h4> -->
+				<div class="row">
+					<div class="col-5">
+					<button class="btn m-2 btn-success" ng-click="openRecipeLink()">Go to Recipe Link</button>
+					</div>
+					<div class="col-9">
+					<button class="btn m-2 btn-danger" ng-click="deleteRecipe()">Delete Recipe</button>
+					</div>
+				</div>					
+				<div class="col-sm-6">
+				<form>
+  					<div class="form-group row">
+  					<button class="btn m-2 btn-info" ng-click="addRecipeToMealPlanById(mealPlanId)">Add Recipe To Meal Plan</button>
+					<button class="btn m-2 btn-warning" ng-click="removeRecipeFromMealPlanById(mealPlanId)">Remove Recipe From Meal Plan</button>
+   						<div class="col-sm-10">
+   							<label for="mealPlanDropdown" class="font-weight-bold">Select Meal Plan:</label>
+   							<select id="mealPlanDropdown" ng-model="mealPlanId" class="form-control">
+   							<option ng-repeat="mealPlan in mealPlans" value="{{mealPlan.id}}">{{mealPlan.id}} - {{mealPlan.mealPlanName}}</option>
+						</select>
+    					</div>
+  					</div>
+				</form>					
+				</div>
 			</div>
 			<div class="card-body justify-content-center has-bg-image">
-				<h4 class="card-title">{{recipe.name}}</h4>
-				<img class="img-flex" ng-src="{{recipe.imageUrl}}" width="200px"
-					height="200px" alt="Recipe Image" priority
-				>
-				<div class="card-body">
-					<a href="#!" class="btn btn-primary" ng-href="{{recipe.recipeUrl}}"
-						target="_blank"
-					>Go to Recipe</a>
-				</div>
-				<!-- Add to Meal Plan button (customize the ng-click based on your logic) -->
-				<button ng-click="addToMealPlan()" class="btn btn-success">Add
-					to Meal Plan</button>
-			</div>
+				<h4 class="card-title ">{{recipe.name}}</h4>
+				<img class="custom-img img-thumbnail mx-auto d-block"
+					ng-src="{{recipe.imageUrl}}" alt="Recipe Image" priority>
+			</div>				
+		</div>			
 		</div>
-	</div>
-</div>
+ 	</div> 
+
+

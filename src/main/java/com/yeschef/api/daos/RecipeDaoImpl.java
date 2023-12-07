@@ -13,47 +13,26 @@ import java.util.Random;
 import com.yeschef.api.models.MealType;
 import com.yeschef.api.models.Recipe;
 
-
 public class RecipeDaoImpl implements RecipeDao {
-	
+
 	private Connection connection = MariaDbUtil.getConnection();
-	
 
-	private static String selectAllRecipes = 
-			"SELECT * "
-			+ "FROM recipes";
+	private static String selectAllRecipes = "SELECT * " + "FROM recipes";
 
-	private static String selectRecipesById = 
-			"SELECT * " + 
-			"FROM recipes "
-			+ "WHERE id = ?";
-	
-	private static String selectRecipesByMealType = 
-			"SELECT * " +
-			"FROM recipes " +
-		    "WHERE mealType = ?";		
-	
-	
-	private static String deleteRecipeById = 
-			"DELETE FROM recipes " 
-			+ "WHERE id = ?";
-	
-	private static String selectRecipesByName = 
-			"SELECT * "
-			+ "FROM recipes "
-			+ "WHERE name LIKE ?";
-	
-	private static String createRecipe =			
-			"INSERT INTO recipes (name, recipeUrl, imageUrl, mealType) "
-			+ "VALUES "
+	private static String selectRecipesById = "SELECT * " + "FROM recipes " + "WHERE id = ?";
+
+	private static String selectRecipesByMealType = "SELECT * " + "FROM recipes " + "WHERE mealType = ?";
+
+	private static String deleteRecipeById = "DELETE FROM recipes " + "WHERE id = ?";
+
+	private static String selectRecipesByName = "SELECT * " + "FROM recipes " + "WHERE name LIKE ?";
+
+	private static String createRecipe = "INSERT INTO recipes (name, recipeUrl, imageUrl, mealType) " + "VALUES "
 			+ "(?, ?, ?, ?)";
-	
-	private static String selectNewRecipeId =
-			"SELECT LAST_INSERT_ID() "
-			+ "AS id";
-			
-	
-	//convenience method to make a list of recipes for each method
+
+	private static String selectNewRecipeId = "SELECT LAST_INSERT_ID() " + "AS id";
+
+	// convenience method to make a list of recipes for each method
 	private List<Recipe> makeRecipe(ResultSet result) throws SQLException {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
 		while (result.next()) {
@@ -63,11 +42,11 @@ public class RecipeDaoImpl implements RecipeDao {
 			recipe.setName(result.getString("name"));
 			recipe.setRecipeUrl(result.getString("recipeUrl"));
 			recipe.setImageUrl(result.getString("imageUrl"));
-			
+
 			String mealTypeString = result.getString("mealType");
 			MealType mealType = MealType.convertStringtoMealType(mealTypeString);
 			recipe.setMealType(mealType);
-			
+
 			recipe.setUpdateDateTime(result.getObject("updateDateTime", LocalDateTime.class));
 			recipe.setCreateDateTime(result.getObject("createDateTime", LocalDateTime.class));
 
@@ -76,7 +55,7 @@ public class RecipeDaoImpl implements RecipeDao {
 
 		return myRecipes;
 	}
-	
+
 	@Override
 	public List<Recipe> getRecipes() {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
@@ -113,69 +92,73 @@ public class RecipeDaoImpl implements RecipeDao {
 		}
 
 		return myRecipes;
-	}	
-	
+	}
+
+
+
+	@Override
 	public List<Recipe> getRandomRecipe() {
-		List<Recipe> myRecipes = new ArrayList<Recipe>();
+		List<Recipe> allRecipes = getRecipes();
+		List<Recipe> myRecipes = new ArrayList<>();
 		ResultSet result = null;
 		PreparedStatement statement = null;
 		Random random = new Random();
-		Integer id = random.nextInt(47) +1;
-		
-		try {
-			statement = connection.prepareStatement(selectRecipesById);
-			statement.setInt(1, id);
+		Integer id = random.nextInt(allRecipes.size()) + 1;
+//		System.out.println("number generated: " + id);
+			
+			try {
+				statement = connection.prepareStatement(selectRecipesById);
+				statement.setInt(1, id);
 
-			result = statement.executeQuery();
-			myRecipes = makeRecipe(result);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+				result = statement.executeQuery();
+				myRecipes = makeRecipe(result);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return myRecipes;
 		}
-
-		return myRecipes;
-	}
 		
+
 	@Override
 	public List<Recipe> getRecipesByMealType(MealType mealType) {
 		List<Recipe> myRecipes = new ArrayList<Recipe>();
 		ResultSet result = null;
 		PreparedStatement statement = null;
-		
+
 		try {
 			statement = connection.prepareStatement(selectRecipesByMealType);
 			statement.setString(1, mealType.toString());
-			
+
 			result = statement.executeQuery();
 			myRecipes = makeRecipe(result);
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return myRecipes;
 	}
-				
+
 	@Override
 	public Recipe deleteRecipeById(Integer id) {
-				
-		List<Recipe> recipes = this.getRecipesById(id); 
+
+		List<Recipe> recipes = this.getRecipesById(id);
 		Recipe recipeToDelete = null;
-		
+
 		if (recipes.size() > 0) {
 			recipeToDelete = recipes.get(0);
 			int updateRowCount = 0;
-			PreparedStatement ps = null;	
+			PreparedStatement ps = null;
 			try {
 				ps = connection.prepareStatement(deleteRecipeById);
 				ps.setInt(1, id);
 				updateRowCount = ps.executeUpdate();
 				System.out.println("rows deleted: " + updateRowCount);
 			} catch (SQLException e) {
-				e.printStackTrace(); 
+				e.printStackTrace();
 			}
 		}
-		
+
 		return recipeToDelete;
 	}
 
@@ -184,14 +167,14 @@ public class RecipeDaoImpl implements RecipeDao {
 		List<Recipe> myRecipes = new ArrayList<>();
 		ResultSet result = null;
 		PreparedStatement statement = null;
-		
-		try { 
-			statement = connection.prepareStatement(selectRecipesByName); 
+
+		try {
+			statement = connection.prepareStatement(selectRecipesByName);
 			statement.setString(1, "%" + searchTerm + "%");
-			
-			result = statement.executeQuery(); 
+
+			result = statement.executeQuery();
 			myRecipes = makeRecipe(result);
-					
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -201,9 +184,9 @@ public class RecipeDaoImpl implements RecipeDao {
 	@Override
 	public Recipe createRecipe(Recipe newRecipe) {
 		PreparedStatement statement = null;
-				
+
 		try {
-			int updateRowCount = 0; 
+			int updateRowCount = 0;
 			statement = connection.prepareStatement(createRecipe);
 			statement.setString(1, newRecipe.getName());
 			statement.setString(2, newRecipe.getRecipeUrl());
@@ -211,17 +194,17 @@ public class RecipeDaoImpl implements RecipeDao {
 			statement.setString(4, newRecipe.getMealType().toString());
 			updateRowCount = statement.executeUpdate();
 			System.out.println("rows inserted: " + updateRowCount);
-			
+
 			int newRecipeId = getNewRecipeId();
 			newRecipe.setId(newRecipeId);
-			
-		} catch (SQLException e) {		
-			e.printStackTrace(); 
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return newRecipe;
 	}
-	
-	//utility to make new recipeId
+
+	// utility to make new recipeId
 	private int getNewRecipeId() {
 		ResultSet rs = null;
 		Statement statement = null;
@@ -230,7 +213,7 @@ public class RecipeDaoImpl implements RecipeDao {
 		try {
 			statement = connection.createStatement();
 			rs = statement.executeQuery(selectNewRecipeId);
-			
+
 			while (rs.next()) {
 				newRecipeId = rs.getInt("id");
 			}
@@ -242,9 +225,4 @@ public class RecipeDaoImpl implements RecipeDao {
 		return newRecipeId;
 	}
 
-
-	
-	
 }
-
-   

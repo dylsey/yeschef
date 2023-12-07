@@ -1,0 +1,62 @@
+<style>
+body {
+	background: url(image/foodcubes.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+</style>
+
+<div class="row pt-3 justify-content-center">
+	<div class="col-sm-6">
+		<div class="card">
+			<div class="card-header text-center text-dark bg-secondary">
+				<h3>Add Your Recipe</h3>
+				<h5 class="text-success" ng-bind="createStatus"></h5>
+			</div>
+			<div class="card-body">
+				<form name="createForm">
+					<div class="form-group">
+						<label for="recipeName" class="font-weight-bold">Recipe Name:</label> 
+							<input ng-model="recipe.name" required ng-min length="2"
+								name="recipeName" type="text" class="form-control" id="recipeName"> 
+								<span ng-show="createForm.recipeName.$touched && createForm.recipeName.$invalid" class="text-danger">required and must be at least two characters.</span>
+					</div>
+					<div class="form-group">
+						<label for="recipeUrl" class="font-weight-bold">Recipe Link/Url:</label> 
+							<input ng-model="recipe.recipeUrl" required ng-minlength="2"
+								name="recipeUrl" type="text" class="form-control" id="recipeUrl">
+								<span ng-show="createForm.recipeUrl.$touched && createForm.recipeUrl.$invalid" class="text-danger">required</span>
+					</div>
+					<div class="form-group">
+						<label for="imageUrl" class="font-weight-bold">Recipe Image Link/Url:</label> 
+							<input ng-model="recipe.imageUrl" required type="text" required ng-min length="2" 
+							name="imageUrl" class="form-control" id="imageUrl"> 						
+							<span ng-show="createForm.imageUrl.$touched && createForm.imageUrl.$invalid"
+							class="text-danger">required</span>
+					</div>
+					<div class="form-group">
+					<label for="mealType" class="font-weight-bold">Meal Type</label>
+					<select ng-options="value for value in mealType" required name="mealType"
+						ng-model="recipe.mealType" class="form-control" id="mealType">
+					</select>
+					<span ng-show="createForm.mealType.$touched && createForm.mealType.$invalid"
+						class="text-danger">
+						required
+					</span>	
+				</div>
+				</form>
+			</div>
+			<div class="card-footer text-center">
+				<button type="button" class="btn btn-success"
+					ng-disabled="createForm.$invalid || disableCreate"
+					ng-click="createRecipe()"
+				>Create</button>
+				<button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
+			</div>
+		</div>
+	</div>
+	<!--  <div class="col-sm-3">			
+	</div>-->
+</div>

@@ -1,0 +1,39 @@
+/**
+ * Access the previously created module 'movieapp'
+ */
+
+(function() {
+	var yeschefapp = angular.module('yeschefapp');
+
+	yeschefapp.controller('createRecipeController', function($scope, $http) {			
+		
+		$scope.mealType = ['Beef','Pork','Seafood','Bird','Vegetarian','Vegan'];
+		
+		$scope.createRecipe = function() {
+			$http.post("/api/webapi/recipes", $scope.recipe)
+			.then(function(response) {				
+				$scope.createStatus = 'create successful';
+				$scope.disableCreate = true;
+				window.alert('Great Success! Recipe Added. Clear form to enter another recipe.');
+			}, function(response) {
+				$scope.createStatus = 'error trying to create recipe';	
+				console.log('error http POST recipe: ' + response.status);
+			});
+		}
+		
+		$scope.clear = function() {
+			$scope.createStatus = '';
+			$scope.recipe.name = '';
+			$scope.recipe.recipeUrl = '';
+			$scope.recipe.imageUrl = '';
+			$scope.recipe.mealType = '';
+						
+			$scope.createForm.$setUntouched();
+			$scope.createForm.$setPristine();
+								
+			$scope.disableCreate = false;
+		}
+		
+	});
+	
+})()

@@ -1,86 +1,88 @@
 <style>
-    /* Add your custom styles here */
-    .custom-opacity {
-        position: relative;
-    }
+/* Add your custom styles here */
+.custom-opacity {
+	position: relative;
+}
 
-    .jumbotron {
-        background-image: url(./image/foodcubes.jpg);
-        background-size: cover;
-        opacity: 0.7; /* Adjust the opacity of the background image */
-        position: relative;
-        overflow: hidden;
-        color: #000; /* Set text color to dark */
-        text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5); /* Add a subtle white text shadow for better visibility */
-    }
+.jumbotron {
+	background-image: url(./image/foodcubes.jpg);
+	background-size: cover;
+	opacity: 0.7; /* Adjust the opacity of the background image */
+	position: relative;
+	overflow: hidden;
+	color: #000; /* Set text color to dark */
+	text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5);
+	/* Add a subtle white text shadow for better visibility */
+}
 
-    .text-exempt {
-        position: relative; /* Ensure z-index works */
-        z-index: 1; /* Place the text above the background */
-        opacity: 1; /* Make text fully opaque */
-        color: #000; /* Set text color to dark */
-        text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5); /* Add a subtle white text shadow for better visibility */
-    }
-    
-	
-    .has-bg-image {
-        position: relative;
-    }
+.text-exempt {
+	position: relative; /* Ensure z-index works */
+	z-index: 1; /* Place the text above the background */
+	opacity: 1; /* Make text fully opaque */
+	color: #000; /* Set text color to dark */
+	text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5);
+	/* Add a subtle white text shadow for better visibility */
+}
 
-    .has-bg-image::before {
-        content: "";        
-        background-image: url(./image/granbg.jpg);
-        background-size: cover;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0.3; /* Adjust the opacity of the background image */
-        z-index: -1; /* Place the pseudo-element behind the content */
-	}
-    
+.has-bg-image {
+	position: relative;
+}
+
+.has-bg-image::before {
+	content: "";
+	background-image: url(./image/granbg.jpg);
+	background-size: cover;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 0.3; /* Adjust the opacity of the background image */
+	z-index: -1; /* Place the pseudo-element behind the content */
+}
 </style>
 
 
 <div class="jumbotron text-center img-fluid shadow">
-    <span class="display-1 text-exempt fw-bolder">Yes Chef</span>
+	<span class="display-1 text-exempt fw-bolder">Yes Chef</span>
 </div>
 <div>
-<h2 class="fw-bolder pb-1 border-bottom">A simple way to save time</h2>
-<div class="row container-fluid image-fluid has-bg-image"
-		style="  
-    	background-size: cover">
-	<div class="col-4">
-		<img class="img-fluid shadow" src="./image/doughhands.jpg" alt="dough hands">
+	<h2 class="fw-bolder pb-1 border-bottom">A simple way to save time</h2>
+	<div class="row container-fluid image-fluid has-bg-image"
+		style="background-size: cover"
+	>
+		<div class="col-4">
+			<img class="img-fluid shadow" src="./image/doughhands.jpg"
+				alt="dough hands"
+			>
+		</div>
+		<div class="col-4 text-exempt ">
+
+			<h3>Yes Chef helps me find more free time</h3>
+			<p>
+				My wife and I highly value our free time. So do most other people
+				these days. I come from a culinary background and cooking
+				has always been important in my life.<br> My wife and I try and
+				meal plan most weeks to help give us more free time.<br> 
+				We both have an active lifestyle that
+				includes biking, travel, our dogs, our friends, and our own personal
+				journeys.<br> Yes Chef came from the necessity of me wanting to improve 
+				the process of meal planning in our house.<br> My goal is to eventually have
+				Yes Chef be a one stop solution for us.<br> 
+			<p>
+			<h4>What does Yes Chef Do?</h4>
+			<p>
+				Yes Chef allows you to make your own favorite meal database.<br>
+				You can browse and sort your meals.<br> If you don't
+				feel like browsing, find a recipe at Random.<br> Once you've
+				found something you like. Add it to the Meal Plan.<br> 
+				Eventually you will be able to not only add your recipes to a grocery cart automatically, but also
+			    send those groceries to your favorite grocery store app and either pick up your list or just have it delivered. 
+				<br>			
+			</p>
+		</div>
+		<div class="col-4">
+			<img class="img-fluid shadow" src="./image/ingredients.jpg"
+				alt="ingredients">
+		</div>
 	</div>
-	<div class="col-4 text-exempt ">
-		
-		<h3>Yes Chef helps me find more free time</h3>
-		<p>
-			My wife and I highly value our free time. As do most other people I
-			know these days.<br> I come from a culinary background and
-			cooking has always been important in my life.<br> My wife and I
-			try and meal plan most weeks.<br> This saves us tons of time for
-			us to focus on ourselves and each other.<br> We both have an
-			active lifestyle that includes biking, travel, our dogs, our friends,
-			and our own personal journeys.<br> Yes Chef came from the
-			necessity of me not wanting to go through the effort of finding meals
-			and building shopping lists.<br> Mainly the shopping list part.
-			For some reason I just really don't enjoy making the list.<br>
-			This is where Yes Chef plays a role.
-		<p>
-		<h4>What does Yes Chef Do?</h4>
-		<p>
-			Yes Chef provides meals for you to browse.<br> If you don't feel
-			like browsing, find a recipe at Random.<br> Once you've found
-			something you like. Add it to the Meal Plan.<br> Once you've
-			made a plan you can then add everything to the grocery cart.<br>
-			(Eventually YC will do the shopping for you!)
-		</p>
-	</div>
-	<div class="col-4">
-		<img class="img-fluid shadow" src="./image/ingredients.jpg"
-			alt="ingredients">
-	</div>
-</div>
 </div>
 

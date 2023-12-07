@@ -1,0 +1,83 @@
+<style>
+body {
+	background: url(image/foodcubes.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+.card-image {
+	max-height: 150px; /* Adjust the maximum height of the card image */
+	max-width: 150px;
+	
+}
+.text-exempt {
+	position: relative; /* Ensure z-index works */
+	z-index: 1; /* Place the text above the background */
+	opacity: 1; /* Make text fully opaque */
+	color: #000;
+	/* Set text color to white (or your preferred dark color) */
+}
+
+.has-bg-image {
+	position: relative;
+}
+
+.has-bg-image {
+	background-image: url(./image/granbg.jpg);
+	background-size: cover;
+	position: relative;
+	opacity: 0.5; /* Adjust the opacity of the background image */
+	z-index: -1;
+	color: #000;
+	text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5);
+	/* Add a subtle white text shadow for better visibility */
+}
+
+.card {
+	position: relative;
+	z-index: 0;
+}
+
+.card-body {
+	position: relative;
+	z-index: 1;
+}
+.custom-img{
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+
+}
+</style>
+<div class="card mt-3">
+	<div class="card-header text-dark bg-secondary">
+		<h4>Browse Your Meal Plans</h4>
+		<button class="btn btn-success" ng-click="getAllMealPlans()">Refresh
+			Meal Plans</button>
+		<button class="btn btn-success"  ng-click="createMealPlan()">Create Meal Plan</button>		
+		<span class="float-right"></span> Search: <input type="text"
+			maxlength="15" ng-model="searchValue">
+	</div>
+	<div class="card-body">
+		<table class="table table-hover">
+			<thead class="table table-dark">
+			<tr>
+				<th>Meal Plan Id</th>
+				<th>Meal Plan Name</th>
+				<th>Number Of Recipes</th>
+				<th>Create Date</th>
+				<th>Last Update</th>
+			</tr>	
+			</thead>			
+			<tbody>
+				<tr ng-repeat="mealPlan in mealPlans  | filter: searchValue"
+					ng-click="goToPlanIdView(mealPlan.id)">
+					<td>{{mealPlan.id}}</td>
+					<td>{{mealPlan.mealPlanName}}</td>
+					<td>{{mealPlan.recipes.length}}</td>
+					<td>{{mealPlan.createDateTime}}</td>
+					<td>{{mealPlan.updateDateTime}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

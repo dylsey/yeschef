@@ -18,6 +18,8 @@ public class MealPlanDaoImpl implements MealPlanDao {
 
 	private static String createMealPlan = "INSERT INTO mealPlan (mealPlanName) " + "VALUES " + "(?)";
 
+	private static String updateMealPlanById = "UPDATE mealplan " + "SET mealPlanName = ?" + "WHERE id = ?";
+
 	private static String selectAllMealPlans = "SELECT * " + " FROM mealplan";
 
 	private static String selectMealPlanById = "SELECT * " + "FROM mealPlan " + "WHERE id = ?";
@@ -141,6 +143,23 @@ public class MealPlanDaoImpl implements MealPlanDao {
 		return newMealPlan;
 	}
 
+	@Override
+	public MealPlan updateMealPlan(MealPlan updateMealPlan) {
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection.prepareStatement(updateMealPlanById);
+			statement.setString(1, updateMealPlan.getMealPlanName());
+			statement.setInt(2, updateMealPlan.getId());
+			int updateRowCount = statement.executeUpdate();
+			System.out.println("rows updated: " + updateRowCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return updateMealPlan;
+	}
+
 	private int getNewMealPlanId() {
 		ResultSet rs = null;
 		Statement statement = null;
@@ -181,7 +200,6 @@ public class MealPlanDaoImpl implements MealPlanDao {
 		return myRecipes;
 	}
 
-
 	@Override
 	public Recipe addRecipeToMealPlanByMealPlanId(Integer mealPlanId, Integer recipeId) {
 
@@ -219,7 +237,6 @@ public class MealPlanDaoImpl implements MealPlanDao {
 	public Recipe removeRecipeFromMealPlanByMealPlanId(Integer mealPlanId, Integer recipeId) {
 		List<Recipe> recipes = this.getRecipesById(recipeId);
 		Recipe recipeToRemove = null;
-
 
 		if (recipes.size() > 0) {
 			recipeToRemove = recipes.get(0);

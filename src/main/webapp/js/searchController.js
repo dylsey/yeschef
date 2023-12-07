@@ -19,9 +19,27 @@
 		}
 
 		$scope.goToRecipeView = function(recipeId) {
-				//window.alert("recipe id: " + recipeId);
+			console.log("recipe id: " + recipeId);
 			$location.path('/recipes/' + recipeId);
 		}
+
+		$scope.getRandomRecipe = function() {
+			$http.get("/api/webapi/recipes/random")
+				.then(function(response) {
+					$scope.recipes = response.data;
+					console.log('random recipe selected');
+				}, function(response) {
+					console.log('error http GET random recipe' + response.status);
+				});
+		}
+
+
+
+		$scope.goToCreateRecipeView = function() {
+			//window.alert("going to create recipe");
+			$location.path('/createrecipe/');
+		}
+
 
 
 	})
