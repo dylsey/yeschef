@@ -35,10 +35,10 @@
 			})
 
 			//update meal plan view
-			.when("/list/", {
-				templateUrl: "list.html",
-				controller: "listController"
-			})
+			//.when("/list/", {
+			//	templateUrl: "list.html",
+			//	controller: "listController"
+		//	})
 
 			.when("/stack", {
 				templateUrl: "stack.html"
