@@ -5,7 +5,7 @@
 (function() {
 	var yeschefapp = angular.module('yeschefapp');
 
-	yeschefapp.controller('createMealPlanController', function($scope, $http, ) {			
+	yeschefapp.controller('createMealPlanController', function($scope, $http ) {			
 		
 		
 		

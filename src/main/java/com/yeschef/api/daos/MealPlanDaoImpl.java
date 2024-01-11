@@ -205,7 +205,7 @@ public class MealPlanDaoImpl implements MealPlanDao {
 
 		List<Recipe> recipes = this.getRecipesById(recipeId);
 		Recipe recipeToAdd = null;
-		ResultSet result = null;
+//		ResultSet result = null;
 
 		if (recipes.size() > 0) {
 			recipeToAdd = recipes.get(0);
